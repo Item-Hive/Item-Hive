@@ -1,6 +1,7 @@
 # ICT-BRANDED-APP
-<img src="./assets/logo.png" alt="Project Logo" width="200"/>
-
+<p align="center">
+<img src="[./assets/logo.png](https://ict-branded.github.io/src/BE3B1022-D4DD-4030-BDD8-C8AA40EC5276.jpeg)" alt="product" width="200"/>
+</p>
 
 **Mission :** Provide simple dependable website that will enable our customers to purchase our ICT branded products withiut any effort.
 

@@ -7,6 +7,7 @@
 **Vision :** Becoming a number one company in South Africa, with realiable, simple, safe and usable software, providing all the needs our customers.
 
 **Values :** We value customers need more than money
+
 -We value usability more than appearance
 
 -We value the interests and safety of our customers .

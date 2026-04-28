@@ -16,7 +16,7 @@
 ---
 
 ## Table of Contents
-- [Project Overview](#-corporate colours)
+- [Corporate colours](#-corporate colours)
 - [The Challenge](#-the-challenge)
 - [The Solution](#-the-solution)
 - [Key Features](#-key-features)

@@ -3,14 +3,16 @@
 
 
 **Mission :** Provide simple dependable website that will enable our customers to purchase our ICT branded products withiut any effort.
-**Vision : :** Becoming a number one company in South Africa, with realiable, simple, safe and usable software, providing all the needs our customers.
+
+**Vision :** Becoming a number one company in South Africa, with realiable, simple, safe and usable software, providing all the needs our customers.
+
 **Values : :** We value customers need more than money
 -We value usability more than appearance
 -We value the interests and safety of our customers .
 ---
 
 ## Table of Contents
-- [Project Overview](#-project-overview)
+- [Project Overview](#-corporate colours)
 - [The Challenge](#-the-challenge)
 - [The Solution](#-the-solution)
 - [Key Features](#-key-features)
@@ -21,19 +23,23 @@
 
 ---
 
-## Project Overview
-
-**Corporate colours :**
+## Corporate colours
  **-HEX CODE:** #0097B2
+ 
 **-CMYK: ** 100%,15%,0%,30%
+
 **-RGB:** 0,196,204** 
 
 **-HEX CODE:** #FF751F
+
 **-CMYK:** 0%,54%,88%,0%
+
 **-RGB :** 255,177,31
 
 **-HEX CODE:** #101D56
+
 **-CMYK:** 81%,66%,0%,66%
+
 **-RGB:** 16,29,86
 
 ---

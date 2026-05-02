@@ -117,6 +117,7 @@ Presented and developed by:
 - Sinobawo Nkomo
 - Snalo Noni 
 - Siphokuhle Nyana
+- Mihle Nosilela
 
 ---
 

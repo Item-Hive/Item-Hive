@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Back-end work/Branded.iml" filepath="$PROJECT_DIR$/Back-end work/Branded.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ICT-BRANDED-APP.iml" filepath="$PROJECT_DIR$/.idea/ICT-BRANDED-APP.iml" />
     </modules>
   </component>

@@ -56,7 +56,7 @@
 - Social isolation .
 
 **Impact of the Problem:**
-- Poor academic perfomance, frustration, and significant inconvenience for sense of belonging in the field / ICT industry.
+- Poor academic perfomance, frustration and significant inconvenience for sense of belonging in the field / ICT industry.
 - Missed classes and academic activities.
 - Increased stress and anxiety for students.
 
@@ -96,16 +96,16 @@ Core functionalities include:
 - Students .
 
 **Rationale:** 
-Students require quick, reliable, and convenient ecommerce application to improve service delivery, accessibility, and operational efficiency.
+Students require quick, reliable, and convenient ecommerce application to improve service delivery, accessibility and operational efficiency.
 
 ---
 
 ## 🛠️ Technologies & Tools
 
 - **Frontend:** React.js
-- **Backend:** Java, Postman, and JPA
+- **Backend:** Java, Postman and JPA
 - **Database:** MySQL
-- **Tools:** GitHub, Trello and Figma.
+- **Tools:** GitHub, Trello and Figma
 
 ---
 
@@ -121,4 +121,4 @@ Presented and developed by:
 
 ---
 
-*For inquiries or support regarding ICT-BRANDED, please open an issue in the repository.*
+*For inquiries or support regarding Item Hive, please open an issue in the repository.*

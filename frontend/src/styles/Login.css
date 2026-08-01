@@ -1,0 +1,182 @@
+:root {
+  --navy: #101D56;
+  --orange: #FF751F;
+  --teal: #0097B2;
+  --grey: #f4f6fb;
+  --border: #dde2f0;
+  --text: #101D56;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Source Sans 3", sans-serif;
+  background: var(--navy);
+}
+
+/* PAGE */
+
+.page-body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background: var(--navy);
+}
+
+/* CARD */
+
+.card {
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,.35);
+}
+
+.card-accent {
+  height: 6px;
+  background: var(--orange);
+}
+
+.card-inner {
+  padding: 35px;
+}
+
+/* LOGO */
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.logo-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--navy);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-placeholder svg {
+  width: 30px;
+  height: 30px;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--navy);
+}
+
+.logo-text span {
+  color: var(--orange);
+}
+
+/* TABS */
+
+.tabs {
+  display: flex;
+  border: 2px solid var(--navy);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+
+.tab {
+  flex: 1;
+  padding: 14px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.tab.active {
+  background: var(--navy);
+  color: white;
+}
+
+/* FORM */
+
+.form-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+input {
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--grey);
+  font-size: 15px;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+/* BUTTONS */
+
+.btn-primary {
+  padding: 14px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.btn-primary:hover {
+  background: #1a2d7a;
+}
+
+.btn-secondary {
+  padding: 14px;
+  background: white;
+  border: 2px solid var(--teal);
+  color: var(--teal);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-secondary:hover {
+  background: var(--teal);
+  color: white;
+}
+
+/* DIVIDER */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider-text {
+  font-size: 13px;
+  color: grey;
+}

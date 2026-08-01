@@ -1,0 +1,108 @@
+import { useState } from "react";
+import "../styles/Login.css";
+
+function Login() {
+  const [activeTab, setActiveTab] = useState("signin");
+
+  return (
+    <div className="page-body">
+      <div className="card">
+        <div className="card-accent"></div>
+
+        <div className="card-inner">
+          {/* Logo */}
+          <div className="logo-row">
+            <div className="logo-placeholder">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0097B2"
+                strokeWidth="1.8"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" />
+              </svg>
+            </div>
+
+            <div className="logo-text">
+              Welcome to ICT <span>Branded</span>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="tabs">
+            <button
+              className={`tab ${activeTab === "signin" ? "active" : ""}`}
+              onClick={() => setActiveTab("signin")}
+            >
+              Sign In
+            </button>
+
+            <button
+              className={`tab ${activeTab === "signup" ? "active" : ""}`}
+              onClick={() => setActiveTab("signup")}
+            >
+              Sign Up
+            </button>
+          </div>
+
+          {/* Sign In */}
+          {activeTab === "signin" && (
+            <div className="form-panel active">
+              <input type="text" placeholder="Student Number" />
+
+              <input type="password" placeholder="Password" />
+
+              <button className="btn-primary">
+                Sign In
+              </button>
+
+              <div className="divider">
+                <div className="divider-line"></div>
+                <div className="divider-text">OR</div>
+                <div className="divider-line"></div>
+              </div>
+
+              <button
+                className="btn-secondary"
+                onClick={() => setActiveTab("signup")}
+              >
+                Create an account
+              </button>
+            </div>
+          )}
+
+          {/* Sign Up */}
+          {activeTab === "signup" && (
+            <div className="form-panel active">
+              <input type="text" placeholder="Full Name" />
+
+              <input type="text" placeholder="Student Number" />
+
+              <input type="password" placeholder="Password" />
+
+              <button className="btn-primary">
+                Sign Up
+              </button>
+
+              <div className="divider">
+                <div className="divider-line"></div>
+                <div className="divider-text">OR</div>
+                <div className="divider-line"></div>
+              </div>
+
+              <button
+                className="btn-secondary"
+                onClick={() => setActiveTab("signin")}
+              >
+                Already have an account
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Login;

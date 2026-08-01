@@ -1,0 +1,93 @@
+:root{
+    --navy:#101D56;
+    --orange:#FF751F;
+    --teal:#0097B2;
+    --border:#d9d9d9;
+}
+
+.profile-page{
+    background:#f8f8f8;
+    min-height:100vh;
+}
+
+.profile-header{
+    background:var(--navy);
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    padding:20px 35px;
+    font-weight:bold;
+}
+
+.profile-header span{
+    color:var(--orange);
+}
+
+.profile-nav{
+    color:var(--teal);
+}
+
+.profile-banner{
+    background:var(--navy);
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+
+.avatar{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:var(--orange);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:auto;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.profile-banner p{
+    color:var(--teal);
+}
+
+.profile-section{
+    background:white;
+    margin:30px;
+    border-radius:15px;
+    padding:20px;
+    border:1px solid var(--border);
+}
+
+.order-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 0;
+    border-bottom:1px solid #eee;
+}
+
+.order-card:last-child{
+    border-bottom:none;
+}
+
+.setting-btn{
+    width:100%;
+    text-align:left;
+    padding:14px;
+    margin-bottom:10px;
+    background:white;
+    border:none;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.setting-btn:hover{
+    color:var(--teal);
+}
+
+.logout-container{
+    display:flex;
+    justify-content:center;
+    padding-bottom:40px;
+}

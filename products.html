@@ -114,7 +114,6 @@
       gap: 14px;
       margin-bottom: 20px;
     }
-    .banner-icon { font-size: 24px; }
     .banner-text { color: #fff; font-size: 14px; font-weight: 600; }
     .banner-text strong { color: var(--orange); font-size: 16px; }
     .banner-badge {
@@ -199,6 +198,7 @@
     }
     .add-btn:hover { background: #e5651a; }
     .add-btn:active { transform: scale(.95); }
+    .add-btn.in-cart { background: var(--teal); }
 
     /* ── CART TOAST ── */
     .toast {
@@ -254,7 +254,7 @@
 
     <div class="product-grid" id="product-grid">
 
-      <div class="product-card" data-category="crop">
+      <div class="product-card" data-category="crop" data-id="crop">
         <div class="product-img teal">
           👚
           <div class="discount-tag">-20%</div>
@@ -267,12 +267,12 @@
               <span class="price-orig">R130</span>
               <span class="price-disc">R104</span>
             </div>
-            <button class="add-btn" onclick="addToCart('ICT Crop')">+ Add</button>
+            <button class="add-btn" data-id="crop" onclick="addToCart('crop')">+ Add</button>
           </div>
         </div>
       </div>
 
-      <div class="product-card" data-category="tshirt">
+      <div class="product-card" data-category="tshirt" data-id="classic">
         <div class="product-img navy">
           👕
           <div class="discount-tag">-20%</div>
@@ -285,12 +285,12 @@
               <span class="price-orig">R150</span>
               <span class="price-disc">R120</span>
             </div>
-            <button class="add-btn" onclick="addToCart('ICT Classic')">+ Add</button>
+            <button class="add-btn" data-id="classic" onclick="addToCart('classic')">+ Add</button>
           </div>
         </div>
       </div>
 
-      <div class="product-card" data-category="tshirt">
+      <div class="product-card" data-category="tshirt" data-id="custom">
         <div class="product-img orange">
           🖨️
           <div class="discount-tag">-20%</div>
@@ -303,12 +303,12 @@
               <span class="price-orig">R200</span>
               <span class="price-disc">R160</span>
             </div>
-            <button class="add-btn" onclick="addToCart('Custom Print')">+ Add</button>
+            <button class="add-btn" data-id="custom" onclick="addToCart('custom')">+ Add</button>
           </div>
         </div>
       </div>
 
-      <div class="product-card" data-category="oversized">
+      <div class="product-card" data-category="oversized" data-id="oversized">
         <div class="product-img light">
           🧥
           <div class="discount-tag">-20%</div>
@@ -321,7 +321,7 @@
               <span class="price-orig">R180</span>
               <span class="price-disc">R144</span>
             </div>
-            <button class="add-btn" onclick="addToCart('ICT Oversized')">+ Add</button>
+            <button class="add-btn" data-id="oversized" onclick="addToCart('oversized')">+ Add</button>
           </div>
         </div>
       </div>
@@ -332,15 +332,57 @@
   <div class="toast" id="toast">✅ <span id="toast-item"></span> added to cart!</div>
 
   <script>
-    let cartCount = 0;
+    // ── PRODUCT CATALOG (single source of truth, shared logically with checkout.html) ──
+    const CATALOG = {
+      crop:      { name: "ICT Crop",      sub: "Women's Fit",       price: 130, emoji: "👚", bg: "teal"   },
+      classic:   { name: "ICT Classic",   sub: "Unisex",             price: 150, emoji: "👕", bg: "navy"   },
+      custom:    { name: "Custom Print",  sub: "Name + Language",    price: 200, emoji: "🖨️", bg: "orange" },
+      oversized: { name: "ICT Oversized", sub: "Unisex",             price: 180, emoji: "🧥", bg: "light"  }
+    };
 
-    function addToCart(name) {
-      cartCount++;
-      document.getElementById('cart-count').textContent = cartCount;
-      document.getElementById('toast-item').textContent = name;
+    const CART_KEY = "ict_branded_cart";
+    let toastTimer = null;
+
+    function loadCart() {
+      try {
+        const raw = localStorage.getItem(CART_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
+
+    function cartCount(cart) {
+      return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+    }
+
+    function updateCartUI() {
+      const cart = loadCart();
+      document.getElementById('cart-count').textContent = cartCount(cart);
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        const id = btn.dataset.id;
+        const inCart = cart[id] > 0;
+        btn.classList.toggle('in-cart', !!inCart);
+        btn.textContent = inCart ? `✓ In Cart (${cart[id]})` : '+ Add';
+      });
+    }
+
+    function addToCart(id) {
+      const cart = loadCart();
+      cart[id] = (cart[id] || 0) + 1;
+      saveCart(cart);
+      updateCartUI();
+
+      const product = CATALOG[id];
+      document.getElementById('toast-item').textContent = product.name;
       const toast = document.getElementById('toast');
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
     function filterProducts(category, btn) {
@@ -350,6 +392,13 @@
         card.style.display = (category === 'all' || card.dataset.category === category) ? 'block' : 'none';
       });
     }
+
+    // Keep cart badge/buttons in sync if updated from checkout.html in another tab
+    window.addEventListener('storage', (e) => {
+      if (e.key === CART_KEY) updateCartUI();
+    });
+
+    updateCartUI();
   </script>
 
 </body>

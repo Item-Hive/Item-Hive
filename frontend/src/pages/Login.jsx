@@ -1,8 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "../styles/Login.css";
 
 function Login() {
   const [activeTab, setActiveTab] = useState("signin");
+  const navigate = useNavigate(); 
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    navigate("/products"); 
+  };
 
   return (
     <div className="page-body">
@@ -53,7 +61,8 @@ function Login() {
 
               <input type="password" placeholder="Password" />
 
-              <button className="btn-primary">
+              {/* Added onClick handler */}
+              <button className="btn-primary" onClick={handleLogin}>
                 Sign In
               </button>
 
@@ -81,7 +90,8 @@ function Login() {
 
               <input type="password" placeholder="Password" />
 
-              <button className="btn-primary">
+              {/* Added onClick handler */}
+              <button className="btn-primary" onClick={handleLogin}>
                 Sign Up
               </button>
 

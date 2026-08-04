@@ -32,7 +32,7 @@ function Login() {
             </div>
 
             <div className="logo-text">
-              Welcome to ICT <span>Branded</span>
+              Welcome to Item <span>Hive</span>
             </div>
           </div>
 

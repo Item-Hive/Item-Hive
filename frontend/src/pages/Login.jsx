@@ -1,8 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "../styles/Login.css";
 
 function Login() {
   const [activeTab, setActiveTab] = useState("signin");
+  const navigate = useNavigate(); 
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    navigate("/products"); 
+  };
 
   return (
     <div className="page-body">
@@ -32,6 +39,7 @@ function Login() {
           {/* Tabs */}
           <div className="tabs">
             <button
+              type="button"
               className={`tab ${activeTab === "signin" ? "active" : ""}`}
               onClick={() => setActiveTab("signin")}
             >
@@ -39,6 +47,7 @@ function Login() {
             </button>
 
             <button
+              type="button"
               className={`tab ${activeTab === "signup" ? "active" : ""}`}
               onClick={() => setActiveTab("signup")}
             >
@@ -53,7 +62,7 @@ function Login() {
 
               <input type="password" placeholder="Password" />
 
-              <button className="btn-primary">
+              <button type="button" className="btn-primary" onClick={handleLogin}>
                 Sign In
               </button>
 
@@ -64,6 +73,7 @@ function Login() {
               </div>
 
               <button
+                type="button"
                 className="btn-secondary"
                 onClick={() => setActiveTab("signup")}
               >
@@ -81,7 +91,7 @@ function Login() {
 
               <input type="password" placeholder="Password" />
 
-              <button className="btn-primary">
+              <button type="button" className="btn-primary" onClick={handleLogin}>
                 Sign Up
               </button>
 
@@ -92,6 +102,7 @@ function Login() {
               </div>
 
               <button
+                type="button"
                 className="btn-secondary"
                 onClick={() => setActiveTab("signin")}
               >

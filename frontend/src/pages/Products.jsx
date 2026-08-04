@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Products.css'; 
+import "../styles/Products.css"; 
 
 const PRODUCTS = [
   { id: 'crop', category: 'crop', name: "ICT Crop", sub: "Women's Fit", price: 130, discPrice: 104, emoji: "👚", bg: "teal" },
@@ -50,13 +50,32 @@ export default function Products() {
 
   const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
-  const addToCart = (product) => {
+  const addToCart = (product, e) => {
+    // Prevent clicking the button from firing card-level click events
+    if (e) e.stopPropagation();
+
     const updatedCart = { ...cart, [product.id]: (cart[product.id] || 0) + 1 };
     saveCart(updatedCart);
 
     // Show Toast
     setToastMessage(product.name);
     setShowToast(true);
+  };
+
+  // Direct checkout handler (navigates & sends cart/item info)
+  const goToCheckout = (product = null) => {
+    let currentCart = cart;
+
+    // If clicking a specific product directly, ensure at least 1 is in cart before navigating
+    if (product) {
+      if (!currentCart[product.id]) {
+        currentCart = { ...cart, [product.id]: 1 };
+        saveCart(currentCart);
+      }
+    }
+
+    // Navigate to checkout and optionally pass current cart in router state
+    navigate('/checkout', { state: { cart: currentCart, selectedProduct: product } });
   };
 
   // Auto-hide toast after 2 seconds
@@ -77,7 +96,8 @@ export default function Products() {
         <div className="nav-logo">ICT <span>Branded</span></div>
         <div className="nav-right">
           <span className="nav-student">230036937</span>
-          <button className="nav-cart" onClick={() => navigate('/checkout')}>
+          {/* Nav Cart Button takes whole cart to Checkout */}
+          <button className="nav-cart" onClick={() => goToCheckout()}>
             🛒 Cart (<span id="cart-count">{cartCount}</span>)
           </button>
         </div>
@@ -122,7 +142,13 @@ export default function Products() {
             const inCart = qty > 0;
 
             return (
-              <div key={product.id} className="product-card" data-category={product.category}>
+              <div 
+                key={product.id} 
+                className="product-card" 
+                data-category={product.category}
+                style={{ cursor: 'pointer' }}
+                onClick={() => goToCheckout(product)} // 👈 Clicking the card takes user to Checkout!
+              >
                 <div className={`product-img ${product.bg}`}>
                   {product.emoji}
                   <div className="discount-tag">-20%</div>
@@ -137,7 +163,7 @@ export default function Products() {
                     </div>
                     <button
                       className={`add-btn ${inCart ? 'in-cart' : ''}`}
-                      onClick={() => addToCart(product)}
+                      onClick={(e) => addToCart(product, e)} // 👈 Keeps '+ Add' working without opening checkout immediately
                     >
                       {inCart ? `✓ In Cart (${qty})` : '+ Add'}
                     </button>

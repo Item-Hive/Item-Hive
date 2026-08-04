@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import './Checkout.css';
+ import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom'; 
+import "../styles/Checkout.css"; 
 
 // ── PRODUCT CATALOG ──
 const CATALOG = {
@@ -9,7 +10,7 @@ const CATALOG = {
   oversized: { name: "ICT Oversized", sub: "Unisex",          price: 180, emoji: "🧥", bg: "light"  }
 };
 
-const CART_KEY = "ict_branded_cart";
+const CART_KEY = "item_hive_cart";
 const DISCOUNT = 0.2;
 
 const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));

@@ -8,7 +8,6 @@ function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     navigate("/products"); 
   };
 
@@ -40,6 +39,7 @@ function Login() {
           {/* Tabs */}
           <div className="tabs">
             <button
+              type="button"
               className={`tab ${activeTab === "signin" ? "active" : ""}`}
               onClick={() => setActiveTab("signin")}
             >
@@ -47,6 +47,7 @@ function Login() {
             </button>
 
             <button
+              type="button"
               className={`tab ${activeTab === "signup" ? "active" : ""}`}
               onClick={() => setActiveTab("signup")}
             >
@@ -61,8 +62,7 @@ function Login() {
 
               <input type="password" placeholder="Password" />
 
-              {/* Added onClick handler */}
-              <button className="btn-primary" onClick={handleLogin}>
+              <button type="button" className="btn-primary" onClick={handleLogin}>
                 Sign In
               </button>
 
@@ -73,6 +73,7 @@ function Login() {
               </div>
 
               <button
+                type="button"
                 className="btn-secondary"
                 onClick={() => setActiveTab("signup")}
               >
@@ -90,8 +91,7 @@ function Login() {
 
               <input type="password" placeholder="Password" />
 
-              {/* Added onClick handler */}
-              <button className="btn-primary" onClick={handleLogin}>
+              <button type="button" className="btn-primary" onClick={handleLogin}>
                 Sign Up
               </button>
 
@@ -102,6 +102,7 @@ function Login() {
               </div>
 
               <button
+                type="button"
                 className="btn-secondary"
                 onClick={() => setActiveTab("signin")}
               >

@@ -1,6 +1,6 @@
 # Item-Hive
 <p align="center">
-<img src="https://ict-branded.github.io/src/BE3B1022-D4DD-4030-BDD8-C8AA40EC5276.jpeg" alt="product" width="200"/>
+<img src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png" alt="product" width="200"/>
 </p>
 
 **Mission :** Provide simple dependable website that will enable our customers to purchase our ICT branded products withiut any effort.

@@ -73,21 +73,19 @@ function Login() {
         <div className="card-accent"></div>
 
         <div className="card-inner">
-
           {/* Logo */}
-{/* Logo */}
-<div className="logo-row">
-  <div className="logo-placeholder">
-    <img src={logo} alt="ItemHive Logo" className="logo-image" />
-  </div>
+          <div className="logo-row">
+            <div className="logo-placeholder">
+              <img src={logo} alt="ItemHive Logo" className="logo-image" />
+            </div>
 
-  <div className="logo-text">
-    Welcome to <span>ItemHive</span>
-  </div>
-</div>
+            <div className="logo-text">
+              Welcome to <span>ItemHive</span>
+            </div>
+          </div>
 
-{/* Tabs */}
-<div className="tabs">
+          {/* Tabs */}
+          <div className="tabs">
             <button
               type="button"
               className={`tab ${activeTab === "signin" ? "active" : ""}`}
@@ -114,7 +112,6 @@ function Login() {
           {/* SIGN IN */}
           {activeTab === "signin" && (
             <form className="form-panel active" onSubmit={handleLogin}>
-
               <input
                 type="text"
                 placeholder="Student Number"
@@ -129,11 +126,7 @@ function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              {error && (
-                <p className="error-message">
-                  {error}
-                </p>
-              )}
+              {error && <p className="error-message">{error}</p>}
 
               <button
                 type="button"
@@ -143,21 +136,15 @@ function Login() {
                 {showPassword ? "Hide Password" : "Show Password"}
               </button>
 
-              <button
-                type="submit"
-                className="btn-primary"
-              >
+              <button type="submit" className="btn-primary">
                 Sign In
               </button>
-
-
             </form>
           )}
 
           {/* SIGN UP */}
           {activeTab === "signup" && (
             <form className="form-panel active" onSubmit={handleSignup}>
-
               <input
                 type="text"
                 placeholder="Full Name"
@@ -179,28 +166,17 @@ function Login() {
                 onChange={(e) => setSignupPassword(e.target.value)}
               />
 
-              {signupError && (
-                <p className="error-message">
-                  {signupError}
-                </p>
-              )}
+              {signupError && <p className="error-message">{signupError}</p>}
 
               <button
                 type="button"
                 className="show-password-btn"
-                onClick={() =>
-                  setShowSignupPassword(!showSignupPassword)
-                }
+                onClick={() => setShowSignupPassword(!showSignupPassword)}
               >
-                {showSignupPassword
-                  ? "Hide Password"
-                  : "Show Password"}
+                {showSignupPassword ? "Hide Password" : "Show Password"}
               </button>
 
-              <button
-                type="submit"
-                className="btn-primary"
-              >
+              <button type="submit" className="btn-primary">
                 Sign Up
               </button>
 
@@ -220,10 +196,8 @@ function Login() {
               >
                 Already have an account
               </button>
-
             </form>
           )}
-
         </div>
       </div>
     </div>

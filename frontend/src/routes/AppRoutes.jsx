@@ -10,25 +10,20 @@ import Checkout from "../pages/Checkout";
 function AppRoutes() {
   return (
     <BrowserRouter>
-
       <Routes>
+        {/* Auth Route */}
+        <Route path="/login" element={<Login />} />
 
-        {/* Login */}
-        <Route path="/" element={<Login />} />
-
-        {/* Everything else */}
+        {/* Protected / App Layout Routes */}
         <Route element={<MainLayout />}>
-
+          <Route path="/" element={<Products />} />
           <Route path="/products" element={<Products />} />
-
           <Route path="/profile" element={<Profile />} />
-
           <Route path="/checkout" element={<Checkout />} />
-
+          {/* Fallback Route */}
+        <Route path="*" element={<Products />} />
         </Route>
-
       </Routes>
-
     </BrowserRouter>
   );
 }

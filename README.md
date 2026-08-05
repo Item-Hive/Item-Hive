@@ -1,6 +1,6 @@
-# ICT-BRANDED-APP
+# Item-Hive
 <p align="center">
-<img src="https://ict-branded.github.io/src/BE3B1022-D4DD-4030-BDD8-C8AA40EC5276.jpeg" alt="product" width="200"/>
+<img src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png" alt="product" width="200"/>
 </p>
 
 **Mission :** Provide simple dependable website that will enable our customers to purchase our ICT branded products withiut any effort.
@@ -11,7 +11,7 @@
 
 -We value usability more than appearance
 
--We value the interests and safety of our customers .
+-We value the interests and safety of our customers.
 
 ---
 
@@ -56,15 +56,15 @@
 - Social isolation .
 
 **Impact of the Problem:**
-- Poor academic perfomance, frustration, and significant inconvenience for sense of belonging in the field / ICT industry .
-- Missed classes and academic activities .
-- Increased stress and anxiety for students .
+- Poor academic perfomance, frustration and significant inconvenience for sense of belonging in the field / ICT industry.
+- Missed classes and academic activities.
+- Increased stress and anxiety for students.
 
 ---
 
 ##  The Solution
 
-**ICT-BRANDED Provides:**
+**Item-Hive Provides:**
 - A robust online ecommerce app.
 - Real-time display of t-shirts.
 - Digital application to buy and order their t-shirts.
@@ -79,7 +79,7 @@
 
 ## Key Features
 
-The ICT-BRANDED app includes a functional web/mobile application powered by a secure database-driven system and an interactive user interface. 
+The Item-Hive app includes a functional web application powered by a secure database-driven system and an interactive user interface. 
 
 Core functionalities include:
 - **Authentication:** Secure user registration and login.
@@ -96,16 +96,16 @@ Core functionalities include:
 - Students .
 
 **Rationale:** 
-Students require quick, reliable, and convenient ecommerce application to improve service delivery, accessibility, and operational efficiency.
+Students require quick, reliable, and convenient ecommerce application to improve service delivery, accessibility and operational efficiency.
 
 ---
 
 ## 🛠️ Technologies & Tools
 
-- **Frontend:** React
-- **Backend:** Java, Postman, and JPA
+- **Frontend:** React.js
+- **Backend:** Java, Postman and JPA
 - **Database:** MySQL
-- **Tools:** GitHub, Trello, and Figma.
+- **Tools:** GitHub, Trello and Figma
 
 ---
 
@@ -115,10 +115,10 @@ Presented and developed by:
 - Athini Ngquke
 - Olwethu Mtwazi
 - Sinobawo Nkomo
-- Snalo Noni 
+- Ricardo Mukwevho
 - Siphokuhle Nyana
 - Mihle Nosilela
 
 ---
 
-*For inquiries or support regarding ICT-BRANDED, please open an issue in the repository.*
+*For inquiries or support regarding Item Hive, please open an issue in the repository.*

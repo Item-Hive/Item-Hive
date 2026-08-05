@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../styles/Products.css"; 
+import Navbar from '../components/Navbar';
 
 const PRODUCTS = [
   { id: 'crop', category: 'crop', name: "ICT Crop", sub: "Women's Fit", price: 130, discPrice: 104, emoji: "👚", bg: "teal" },
@@ -142,6 +143,11 @@ export default function Products() {
             const inCart = qty > 0;
 
             return (
+               <nav>
+        <Navbar/>
+        
+      
+      </nav>
               <div 
                 key={product.id} 
                 className="product-card" 

@@ -1,6 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Navigate to Login page on click
+    navigate("/Login");
+  };
+
   return (
     <nav
       style={{
@@ -15,55 +22,49 @@ function Sidebar() {
         position: "fixed",
         top: 0,
         left: 0,
+        boxSizing: "border-box",
+        zIndex: 1000,
       }}
     >
-    
       <img
         src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png"
         width="100px"
         height="100px"
         alt="logo"
-        style={{ margin: "40px", borderRadius: "50%" }}
-       
+        style={{ margin: "20px auto 30px auto", borderRadius: "50%" }}
       />
 
-     
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "25px",
+          gap: "15px",
           width: "100%",
         }}
       >
-        <Link to="/dashboard" style={linkStyle}>
-          
+        <Link to="/" style={linkStyle}>
           Dashboard
         </Link>
 
         <Link to="/Products" style={linkStyle}>
-         
           Products
         </Link>
 
         <Link to="/Checkout" style={linkStyle}>
-          
           Orders
         </Link>
 
-        <Link to="/analytics" style={linkStyle}>
-          
-          Analytics
-        </Link>
-
         <Link to="/Profile" style={linkStyle}>
-         
-          <span >Profile</span>
+          Profile
         </Link>
       </div>
-      <button id="logout-btn" type="button" style={linkStyle} onClick={() => {
-        <Link to="/Login" style={linkStyle}></Link>
-      }}>
+
+      <button
+        id="logout-btn"
+        type="button"
+        onClick={handleLogout}
+        style={logoutBtnStyle}
+      >
         Logout
       </button>
     </nav>
@@ -71,14 +72,23 @@ function Sidebar() {
 }
 
 const linkStyle = {
-  color: white ,
+  color: "#ffffff",
   textDecoration: "none",
   fontSize: "16px",
   padding: "10px 15px",
   borderRadius: "8px",
   transition: "background 0.3s",
+  display: "block",
 };
 
-
+const logoutBtnStyle = {
+  ...linkStyle,
+  background: "transparent",
+  border: "1px solid rgba(255, 255, 255, 0.3)",
+  cursor: "pointer",
+  marginTop: "auto",
+  width: "100%",
+  textAlign: "left",
+};
 
 export default Sidebar;

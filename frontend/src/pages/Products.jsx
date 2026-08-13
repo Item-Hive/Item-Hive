@@ -1,38 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard"; 
 import "../styles/Products.css";
+import whiteTee from "../assets/back-white-tshirt.JPG";
+import orangeTee from "../assets/back-orange-tshirt.JPG";
+import navyTee from "../assets/back-navy-tshirt.JPG";
 
 const PRODUCTS = [
   {
     id: "white-tee",
     name: "ItemHive White Tee",
+    category: "tshirt",
     color: "White",
     description: "Classic ICT-branded T-shirt in crisp white.",
     price: 200,
+    origPrice: 250,
     sizes: "S, M, L, XL",
     rating: 4.5,
-    image: "/assets/back-white-tshirt.JPG" 
+    image: whiteTee
   },
   {
     id: "orange-tee",
     name: "ICT Orange Tee",
+    category: "tshirt",
     color: "Orange",
     description: "Bright orange tee with bold ICT branding.",
     price: 150,
+    origPrice: 190,
     sizes: "S, M, L, XL",
     rating: 4.2,
-    image: "/assets/back-orange-tshirt.JPG"
+    image: orangeTee
   },
   {
     id: "navy-tee",
     name: "ICT Navy Tee",
+    category: "tshirt",
     color: "Blue",
     description: "Navy tee for a modern ICT look.",
     price: 250,
+    origPrice: 300,
     sizes: "S, M, L, XL",
     rating: 4.7,
-    image: "/assets/back-navy-tshirt.JPG"
+    image: navyTee
   }
 ];
 
@@ -78,13 +87,22 @@ export default function Products() {
 
   const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
+  // Safely handles adding items to cart
   const addToCart = (product, e) => {
-    if (e) e.stopPropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
 
-    const updatedCart = { ...cart, [product.id]: (cart[product.id] || 0) + 1 };
+    const productId = product?.id;
+    const productName = product?.name || "Item";
+
+    if (!productId) return;
+
+    const updatedCart = {
+      ...cart,
+      [productId]: (cart[productId] || 0) + 1,
+    };
+
     saveCart(updatedCart);
-
-    setToastMessage(product.name);
+    setToastMessage(productName);
     setShowToast(true);
   };
 
@@ -115,29 +133,32 @@ export default function Products() {
       : PRODUCTS.filter((p) => p.category === activeFilter);
 
   return (
-    <>
+    <div className="products-container">
+      {/* Top Header Bar */}
       <nav className="products-nav">
         <div className="nav-logo">
-          ICT <span>Branded</span>
+          Item<span>Hive</span>
         </div>
         <div className="nav-right">
-          <span className="nav-student">230036937</span>
+          <span className="nav-student">Student #230036937</span>
           <button className="nav-cart" onClick={() => goToCheckout()}>
             🛒 Cart (<span id="cart-count">{cartCount}</span>)
           </button>
         </div>
       </nav>
 
+      {/* Hero Banner */}
       <div className="hero">
         <div>
           <div className="hero-title">
-            ICT <span>Branded</span> Clothes
+            ICT <span>Branded</span> Apparel
           </div>
           <div className="hero-sub">CODE. CONNECT. CREATE</div>
         </div>
         <div className="discount-pill">-20% Student</div>
       </div>
 
+      {/* Category Filters */}
       <div className="filter-bar">
         {[
           { key: "all", label: "All" },
@@ -156,46 +177,35 @@ export default function Products() {
       </div>
 
       <div className="page-body">
+        {/* Discount Notification Banner */}
         <div className="student-banner">
           <div className="banner-badge">-20% OFF</div>
           <div className="banner-text">
-            Student discount applied! <strong>Save 20%</strong> with your valid student number.
+            Student discount active! <strong>Save 20%</strong> automatically with your registered student account.
           </div>
         </div>
 
-        {/* --- PRODUCT GRID USING ProductCard COMPONENT --- */}
+        {/* Product Cards Grid */}
         <div className="product-grid" id="product-grid">
           {filteredProducts.map((product) => {
-            const qty = cart[product.id] || 0;
-
-            // Mapping your existing product object to match ProductCard props
-            const cardData = {
-              id: product.id,
-              title: product.name,
-              price: product.discPrice,
-              category: product.category,
-              description: `${product.sub} - Student Special`,
-              emoji: product.emoji,
-              bg: product.bg,
-              origPrice: product.origPrice,
-            };
-
             return (
               <ProductCard
                 key={product.id}
-                product={cardData}
-                quantity={qty}
+                product={product}
                 onAddToCart={(e) => addToCart(product, e)}
-                onCardClick={() => goToCheckout(product)}
               />
             );
           })}
         </div>
       </div>
 
+      {/* Toast Notification */}
       <div className={`toast ${showToast ? "show" : ""}`} id="toast">
-        ✅ <span id="toast-item">{toastMessage}</span> added to cart!
+        <span className="toast-icon">🛍️</span>
+        <span>
+          <strong>{toastMessage}</strong> added to cart!
+        </span>
       </div>
-    </>
+    </div>
   );
 }

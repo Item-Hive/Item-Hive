@@ -1,5 +1,5 @@
 import React from "react";
-import "./COLOR.CSS"; // Make sure the path points to where your CSS file is stored
+import "../styles/BrandGuidelines.css"; // Ensure file name casing matches your actual stylesheet
 
 function BrandGuidelines() {
   return (
@@ -7,7 +7,7 @@ function BrandGuidelines() {
       {/* ===================== COLOR EXPLANATION ===================== */}
       <section className="page">
         <header className="page__header">
-          <h1>Color explanation</h1>
+          <h1>Color Explanation</h1>
           <p>
             Our color palette is carefully designed to reflect our brand
             identity, evoke the right emotions, and ensure a consistent visual
@@ -24,23 +24,25 @@ function BrandGuidelines() {
               <span className="swatch__label">CMYK:</span>
               <span className="swatch__value">100%, 15%, 0%, 30%</span>
               <span className="swatch__label">RGB:</span>
-              <span className="swatch__value">0,198,204</span>
+              <span className="swatch__value">0, 151, 178</span>
             </div>
+
             <div className="swatch" style={{ background: "#FF7F1F" }}>
               <span className="swatch__label">HEX CODE:</span>
               <span className="swatch__value">#FF7F1F</span>
               <span className="swatch__label">CMYK:</span>
               <span className="swatch__value">0%, 54%, 88%, 0%</span>
               <span className="swatch__label">RGB:</span>
-              <span className="swatch__value">255,127,31</span>
+              <span className="swatch__value">255, 127, 31</span>
             </div>
+
             <div className="swatch" style={{ background: "#101D50" }}>
               <span className="swatch__label">HEX CODE:</span>
               <span className="swatch__value">#101D50</span>
               <span className="swatch__label">CMYK:</span>
               <span className="swatch__value">81%, 66%, 0%, 66%</span>
               <span className="swatch__label">RGB:</span>
-              <span className="swatch__value">16,29,80</span>
+              <span className="swatch__value">16, 29, 80</span>
             </div>
           </div>
         </div>
@@ -53,12 +55,13 @@ function BrandGuidelines() {
               style={{ background: "#B7C3C6" }}
             >
               <span className="swatch__label">HEX CODE:</span>
-              <span className="swatch__value">#0097B2</span>
+              <span className="swatch__value">#B7C3C6</span>
               <span className="swatch__label">CMYK:</span>
-              <span className="swatch__value">0%, 0%, 0%, 20%</span>
+              <span className="swatch__value">7%, 2%, 0%, 22%</span>
               <span className="swatch__label">RGB:</span>
-              <span className="swatch__value">204,204,204</span>
+              <span className="swatch__value">183, 195, 198</span>
             </div>
+
             <div
               className="swatch swatch--dark-text"
               style={{ background: "#FFFFFF" }}
@@ -68,15 +71,16 @@ function BrandGuidelines() {
               <span className="swatch__label">CMYK:</span>
               <span className="swatch__value">0%, 0%, 0%, 0%</span>
               <span className="swatch__label">RGB:</span>
-              <span className="swatch__value">255,255,255</span>
+              <span className="swatch__value">255, 255, 255</span>
             </div>
+
             <div className="swatch" style={{ background: "#000000" }}>
               <span className="swatch__label">HEX CODE:</span>
               <span className="swatch__value">#000000</span>
               <span className="swatch__label">CMYK:</span>
               <span className="swatch__value">0%, 0%, 0%, 100%</span>
               <span className="swatch__label">RGB:</span>
-              <span className="swatch__value">0,0,0</span>
+              <span className="swatch__value">0, 0, 0</span>
             </div>
           </div>
         </div>
@@ -128,10 +132,10 @@ function BrandGuidelines() {
                 <h3>MAIN HEADINGS</h3>
                 <ul>
                   <li>
-                    Font name: <span className="accent">Helvetica</span>
+                    Font Name: <span className="accent">Helvetica</span>
                   </li>
                   <li>
-                    World Size: <span className="accent">60</span>
+                    Font Size: <span className="accent">60px</span>
                   </li>
                 </ul>
               </div>
@@ -155,13 +159,13 @@ function BrandGuidelines() {
                 </svg>
               </div>
               <div className="type-item__content">
-                <h3>BODY CONTEXT</h3>
+                <h3>BODY CONTENT</h3>
                 <ul>
                   <li>
-                    Font name: <span className="accent">Source Sans</span>
+                    Font Name: <span className="accent">Source Sans Pro</span>
                   </li>
                   <li>
-                    Pro Size: <span className="accent">21</span>
+                    Font Size: <span className="accent">21px</span>
                   </li>
                 </ul>
               </div>
@@ -200,10 +204,10 @@ function BrandGuidelines() {
                 <h3>SUB-HEADING</h3>
                 <ul>
                   <li>
-                    Name: <span className="accent">Source</span>
+                    Font Name: <span className="accent">Source Sans</span>
                   </li>
                   <li>
-                    Sans Size: <span className="accent">23</span>
+                    Font Size: <span className="accent">23px</span>
                   </li>
                 </ul>
               </div>
@@ -241,10 +245,10 @@ function BrandGuidelines() {
                 <h3>ALTERNATIVE</h3>
                 <ul>
                   <li>
-                    Font name: <span className="accent">Chunky</span>
+                    Font Name: <span className="accent">Chunky Five</span>
                   </li>
                   <li>
-                    Five Size: <span className="accent">60</span>
+                    Font Size: <span className="accent">60px</span>
                   </li>
                 </ul>
               </div>

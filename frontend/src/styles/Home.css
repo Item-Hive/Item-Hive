@@ -1,240 +1,236 @@
-/* ==========================================
-   Global / Layout & Color Variables
-   ========================================== */
 :root {
-  --navy: #101D51;
-  --orange: #FF6B00;
-  --cyan: #00A3B5;
-  --bg-light: #f8f9fa;
-  --text-dark: #222222;
-  --text-light: #ffffff;
+  --bg-dark: #0b1120;       /* Main deep slate background */
+  --card-bg: #1e293b;       /* Surface slate card background */
+  --card-inner: #0f172a;     /* Inner card background */
+  --orange: #ff751f;        /* ItemHive Brand Orange */
+  --orange-hover: #e05a00;
+  --border-slate: #334155;  /* Subtle slate border */
+  --text-main: #f8fafc;     /* Bright text */
+  --text-muted: #94a3b8;    /* Soft gray subtext */
+  --cyan: #0097b2;
 }
 
-/* Fix default browser blue links across header/nav */
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* ==========================================
-   Navbar Styling (Fixes Blue Link Issue)
-   ========================================== */
-.navbar, nav {
-  background-color: var(--navy);
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.navbar a, nav a {
-  color: var(--text-light) !important; /* Force white text over blue */
-  text-decoration: none;
-  font-weight: 600;
-  margin-left: 1.5rem;
-  transition: color 0.2s ease-in-out;
-}
-
-.navbar a:hover, nav a:hover {
-  color: var(--orange) !important; /* Orange hover effect */
-}
-
-/* ==========================================
-   Home Container & Hero Section
-   ========================================== */
 .home-container {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: var(--text-dark);
-  background-color: #f4f6f9;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
   min-height: 100vh;
-  padding-bottom: 3rem;
+  padding: 40px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
 }
 
-.hero-section {
-  background: #ffffff;
-  border-radius: 12px;
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 3rem 2rem;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-.home-logo {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  margin-bottom: 1rem;
-}
-
-.hero-content h1 {
-  font-size: 2.5rem;
-  color: var(--navy);
-  margin-bottom: 0.5rem;
-}
-
+/* BRANDING & SPANS */
 .brand-orange {
   color: var(--orange);
 }
 
+/* HERO SECTION */
+.hero-section {
+  text-align: center;
+  padding: 40px 20px;
+  background: radial-gradient(circle at top, #1e293b 0%, var(--bg-dark) 70%);
+  border-radius: 20px;
+  border: 1px solid var(--border-slate);
+}
+
+.home-logo {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  mix-blend-mode: multiply; /* Blends out any white box backgrounds */
+}
+
+.hero-content h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
 .hero-tagline {
-  color: var(--cyan);
+  font-size: 1rem;
   font-weight: 700;
+  color: var(--orange);
   letter-spacing: 2px;
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
+  text-transform: uppercase;
 }
 
 .hero-description {
-  max-width: 650px;
-  margin: 0 auto 2rem;
-  color: #555555;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto 28px auto;
   line-height: 1.6;
-  font-size: 1.05rem;
 }
 
+/* BUTTONS */
 .hero-buttons {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
-/* Buttons */
 .btn-primary {
-  background-color: var(--navy);
-  color: var(--text-light);
-  padding: 0.75rem 1.75rem;
+  background-color: var(--orange);
+  color: #ffffff;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(255, 117, 31, 0.3);
 }
 
 .btn-primary:hover {
-  background-color: #0b143a;
+  background-color: var(--orange-hover);
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
-  border: 2px solid var(--cyan);
-  color: var(--cyan);
-  background: transparent;
-  padding: 0.75rem 1.75rem;
-  border-radius: 8px;
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border-slate);
+  padding: 12px 28px;
+  border-radius: 10px;
   font-weight: 600;
-  display: inline-block;
+  font-size: 1rem;
+  text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
 }
 
 .btn-secondary:hover {
-  background-color: var(--cyan);
-  color: var(--text-light);
+  background-color: var(--card-bg);
+  border-color: var(--text-muted);
+  transform: translateY(-2px);
 }
 
-/* ==========================================
-   Value Proposition Banner
-   ========================================== */
-.value-prop-section {
-  max-width: 1000px;
-  margin: 2rem auto;
-}
-
+/* VALUE PROP SECTION */
 .value-prop-card {
-  background-color: var(--navy);
-  color: var(--text-light);
-  padding: 2.5rem;
-  border-radius: 12px;
-  text-align: center;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-slate);
+  border-radius: 16px;
+  padding: 36px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .value-prop-card h2 {
-  color: var(--orange);
   font-size: 1.8rem;
-  margin-bottom: 1rem;
+  color: var(--orange);
+  margin-bottom: 16px;
 }
 
 .value-prop-card p {
-  line-height: 1.6;
-  max-width: 850px;
-  margin: 0 auto 1rem;
-  color: #e0e6ed;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 14px;
 }
 
-/* ==========================================
-   About Section & Pillars Grid
-   ========================================== */
-.about-section {
-  max-width: 1000px;
-  margin: 3rem auto;
-  padding: 0 1rem;
+.value-prop-card p:last-child {
+  margin-bottom: 0;
 }
 
+/* ABOUT SECTION & PILLARS */
 .section-title {
-  text-align: center;
-  color: var(--navy);
   font-size: 2rem;
-  margin-bottom: 2rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
 }
 
 .pillars-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 20px;
 }
 
 .pillar-card {
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-  border: 1px solid #eef2f5;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-slate);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .pillar-header {
-  border-bottom: 2px solid;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  display: inline-block;
+  width: fit-content;
 }
 
-.pillar-header.orange { border-color: var(--orange); color: var(--orange); }
-.pillar-header.cyan { border-color: var(--cyan); color: var(--cyan); }
-.pillar-header.navy { border-color: var(--navy); color: var(--navy); }
+.pillar-header.orange {
+  background-color: rgba(255, 117, 31, 0.15);
+  color: var(--orange);
+  border: 1px solid rgba(255, 117, 31, 0.3);
+}
 
-.pillar-card p, .values-list {
-  color: #555555;
+.pillar-header.cyan {
+  background-color: rgba(0, 151, 178, 0.15);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 151, 178, 0.3);
+}
+
+.pillar-header.navy {
+  background-color: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.pillar-card p {
+  color: var(--text-muted);
   font-size: 0.95rem;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .values-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .values-list li {
-  margin-bottom: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
-/* ==========================================
-   CTA Section
-   ========================================== */
+.values-list strong {
+  color: var(--text-main);
+}
+
+/* CTA SECTION */
 .cta-section {
-  max-width: 1000px;
-  margin: 3rem auto 1rem;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-slate);
+  border-radius: 16px;
+  padding: 40px 20px;
   text-align: center;
-  background: #ffffff;
-  padding: 2.5rem;
-  border-radius: 12px;
 }
 
 .cta-section h2 {
-  color: var(--navy);
-  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
 }
 
 .cta-section p {
-  color: #666666;
-  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
 }

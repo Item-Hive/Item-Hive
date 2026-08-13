@@ -1,94 +1,159 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
-function Sidebar() {
+function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
-    // Navigate to Login page on click
-    navigate("/Login");
+    navigate("/login");
   };
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <nav
       style={{
-        background: "#18245F",
-        color: "white",
+        background: "#FFFFFF",
+        color: "#0F172A",
         width: "220px",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        padding: "30px 20px",
+        padding: "30px 16px",
         position: "fixed",
         top: 0,
         left: 0,
         boxSizing: "border-box",
+        borderRight: "1px solid #E2E8F0",
+        boxShadow: "2px 0 12px rgba(0, 0, 0, 0.03)",
         zIndex: 1000,
       }}
     >
-      <img
-        src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png"
-        width="100px"
-        height="100px"
-        alt="logo"
-        style={{ margin: "20px auto 30px auto", borderRadius: "50%" }}
-      />
+      {/* App Logo */}
+      <div style={{ width: "100%", textAlign: "center", marginBottom: "30px" }}>
+        <img
+          src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png"
+          width="80px"
+          height="80px"
+          alt="logo"
+          style={{ 
+            borderRadius: "50%", 
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+          }}
+        />
+        <h3 style={{ fontSize: "18px", color: "#F97316", marginTop: "10px", fontWeight: "700" }}>
+          Item<span style={{ color: "#0F172A" }}>Hive</span>
+        </h3>
+      </div>
 
+      {/* Navigation Links */}
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "15px",
+          gap: "8px",
           width: "100%",
         }}
       >
-        <Link to="/" style={linkStyle}>
-          Dashboard
+        <Link
+          to="/brand-guidelines"
+          style={getLinkStyle(isActive("/brand-guidelines"))}
+        >
+          Brand Guidelines
         </Link>
 
-        <Link to="/Products" style={linkStyle}>
+        <Link
+          to="/products"
+          style={getLinkStyle(isActive("/products"))}
+        >
           Products
         </Link>
 
-        <Link to="/Checkout" style={linkStyle}>
+        <Link
+          to="/checkout"
+          style={getLinkStyle(isActive("/checkout"))}
+        >
           Orders
         </Link>
 
-        <Link to="/Profile" style={linkStyle}>
+        <Link
+          to="/profile"
+          style={getLinkStyle(isActive("/profile"))}
+        >
           Profile
         </Link>
       </div>
 
-      <button
-        id="logout-btn"
-        type="button"
-        onClick={handleLogout}
-        style={logoutBtnStyle}
-      >
-        Logout
-      </button>
+      {/* Auth Action Buttons */}
+      <div style={{ marginTop: "auto", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
+        <button
+          id="login-btn"
+          type="button"
+          onClick={handleLogin}
+          style={loginBtnStyle}
+        >
+          Login
+        </button>
+
+        <button
+          id="logout-btn"
+          type="button"
+          onClick={handleLogout}
+          style={logoutBtnStyle}
+        >
+          Logout
+        </button>
+      </div>
     </nav>
   );
 }
 
-const linkStyle = {
-  color: "#ffffff",
+// Dynamic Link Style based on active page
+const getLinkStyle = (active) => ({
+  color: active ? "#F97316" : "#475569",
+  background: active ? "#FFF7ED" : "transparent",
   textDecoration: "none",
-  fontSize: "16px",
-  padding: "10px 15px",
+  fontSize: "15px",
+  fontWeight: active ? "700" : "500",
+  padding: "12px 16px",
   borderRadius: "8px",
-  transition: "background 0.3s",
+  transition: "all 0.2s ease-in-out",
   display: "block",
+  borderLeft: active ? "3px solid #F97316" : "3px solid transparent",
+});
+
+const loginBtnStyle = {
+  color: "#FFFFFF",
+  background: "#F97316",
+  border: "none",
+  borderRadius: "8px",
+  padding: "10px 16px",
+  fontSize: "14px",
+  fontWeight: "700",
+  cursor: "pointer",
+  width: "100%",
+  textAlign: "center",
+  boxShadow: "0 2px 8px rgba(249, 115, 22, 0.25)",
+  transition: "all 0.2s ease",
 };
 
 const logoutBtnStyle = {
-  ...linkStyle,
-  background: "transparent",
-  border: "1px solid rgba(255, 255, 255, 0.3)",
+  color: "#334155",
+  background: "#F8FAFC",
+  border: "1px solid #E2E8F0",
+  borderRadius: "8px",
+  padding: "10px 16px",
+  fontSize: "14px",
+  fontWeight: "600",
   cursor: "pointer",
-  marginTop: "auto",
   width: "100%",
-  textAlign: "left",
+  textAlign: "center",
+  transition: "all 0.2s ease",
 };
 
-export default Sidebar;
+export default Navbar;

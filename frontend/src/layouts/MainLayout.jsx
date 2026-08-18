@@ -1,12 +1,12 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Navbar"; // Adjust path to your Sidebar component
+import Sidebar from "../components/Navbar";
 
 function MainLayout() {
-  const SIDEBAR_WIDTH = "300px"; // Match this to your sidebar's width
+  const SIDEBAR_WIDTH = "220px"; // Fixed: Matches actual navbar width (no more 80px black bar!)
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#0b1120" }}>
+    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f8fafc" }}>
       {/* Fixed Sidebar */}
       <div
         style={{
@@ -21,15 +21,15 @@ function MainLayout() {
         <Sidebar />
       </div>
 
-      {/* Main Content Area - Pushed to the right so sidebar won't overlap */}
+      {/* Main Content Area */}
       <main
         style={{
           marginLeft: SIDEBAR_WIDTH,
           flex: 1,
           padding: "24px",
           minHeight: "100vh",
-          backgroundColor: "#0b1120", // Matches dark theme so text is visible
-          color: "#f8fafc",
+          backgroundColor: "#f8fafc", // Fixed: Light theme canvas
+          color: "#0f172a",          // Fixed: Dark text for light mode
           overflowX: "hidden",
         }}
       >

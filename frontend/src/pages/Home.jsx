@@ -11,7 +11,6 @@ const HomePage = () => {
       {}
       <section className="hero-section">
         <div className="hero-content">
-          <img src={logo} alt="Item Hive Logo" className="home-logo" />
           <h1>
             Welcome to <span className="brand-orange">Item Hive</span>
           </h1>

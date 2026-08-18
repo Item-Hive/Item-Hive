@@ -1,16 +1,17 @@
 :root {
-  --bg-dark: #0b1120;
-  --card-bg: #1e293b;
-  --card-inner: #0f172a;
+  /* Light Mode Theme Variables */
+  --bg-light: #f8fafc;
+  --card-bg: #ffffff;
+  --card-inner: #f1f5f9;
   --orange: #ff751f;
   --orange-hover: #e05a00;
-  --border-slate: #334155;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --border-slate: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
 }
 
 .checkout-container {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-light);
   color: var(--text-main);
   min-height: 100vh;
   padding: 24px;
@@ -28,6 +29,7 @@
   border-radius: 14px;
   border: 1px solid var(--border-slate);
   margin-bottom: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .nav-back {
@@ -69,7 +71,7 @@
   border: 1px solid var(--border-slate);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
 }
 
 .card-head {
@@ -78,6 +80,7 @@
   font-weight: 700;
   font-size: 0.95rem;
   border-bottom: 1px solid var(--border-slate);
+  color: var(--text-main);
 }
 
 .card-body {
@@ -85,6 +88,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-sizing: border-box;
 }
 
 /* STUDENT BANNER */
@@ -146,6 +150,7 @@
 .item-name {
   font-weight: 700;
   font-size: 0.95rem;
+  color: var(--text-main);
 }
 
 .item-sub {
@@ -182,6 +187,7 @@
   font-weight: 700;
   min-width: 18px;
   text-align: center;
+  color: var(--text-main);
 }
 
 .item-price {
@@ -189,6 +195,7 @@
   font-size: 0.95rem;
   min-width: 60px;
   text-align: right;
+  color: var(--text-main);
 }
 
 .remove-btn {
@@ -206,14 +213,6 @@
 }
 
 /* DELIVERY & PAYMENT */
-.card-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  box-sizing: border-box;
-}
-
 .del-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); 
@@ -237,7 +236,7 @@
 
 .del-opt.active {
   border-color: var(--orange);
-  background-color: rgba(255, 117, 31, 0.08);
+  background-color: #fff7ed;
   box-shadow: 0 0 0 1px var(--orange);
 }
 
@@ -245,6 +244,7 @@
   font-weight: 700;
   font-size: 0.95rem;
   margin-bottom: 2px;
+  color: var(--text-main);
 }
 
 .del-desc {
@@ -301,7 +301,9 @@
 }
 
 .disc-badge {
-  background-color: rgba(255, 117, 31, 0.2);
+  background-color: #fff7ed;
+  color: var(--orange);
+  border: 1px solid #ffedd5;
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -328,10 +330,8 @@
   font-weight: 800;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 6px 20px rgba(255, 117, 31, 0.3);
-  margin: 20px auto 0 auto; /* Centers the button */
-  
-  /* Size Controls */
+  box-shadow: 0 4px 14px rgba(255, 117, 31, 0.35);
+  margin: 20px auto 0 auto;
   width: 100%;
   max-width: 480px; 
   display: block;  
@@ -341,13 +341,12 @@
 .order-btn:hover {
   background-color: var(--orange-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(255, 117, 31, 0.45);
+  box-shadow: 0 6px 18px rgba(255, 117, 31, 0.45);
 }
 
 .order-btn:active {
   transform: translateY(0);
 }
-
 
 /* EMPTY & CONFIRM STATES */
 .empty-state,
@@ -357,7 +356,7 @@
   border-radius: 18px;
   padding: 50px 20px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .empty-emoji,
@@ -371,6 +370,7 @@
   font-size: 1.6rem;
   font-weight: 800;
   margin-bottom: 8px;
+  color: var(--text-main);
 }
 
 .empty-sub,

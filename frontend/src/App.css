@@ -1,42 +1,45 @@
 :root {
-  /* ItemHive Dark Slate Theme Palette */
-  --bg-dark: #0b1120;
-  --panel-dark: #1e293b;
-  --border-slate: #334155;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --accent-orange: #ff7f1f;
+  /* ItemHive Light Theme Palette */
+  --bg-light: #f8fafc;
+  --panel-light: #ffffff;
+  --border-slate: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --accent-orange: #f97316;
   --accent-teal: #0097b2;
   
-  /* Layout Dimensions */
-  --sidebar-width: 240px;
+  /* Layout Dimensions (Matches your 220px Navbar) */
+  --sidebar-width: 220px;
 }
 
-body {
+html, body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-dark);
+  background-color: var(--bg-light);
   color: var(--text-primary);
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  width: 100%;
 }
 
 /* Layout Wrapper */
-.main-layout {
-  display: flex;
+.main-layout,
+.layout-container {
+  background-color: #f8fafc !important;
   min-height: 100vh;
-  width: 100vw;
-  background-color: var(--bg-dark);
+  width: 100%;
 }
 
-/* Main Content Area: Offsets content so sidebar doesn't overlap */
+/* Main Content Area: Offsets content by 220px so Navbar doesn't overlap */
 .main-content {
   margin-left: var(--sidebar-width);
   flex: 1;
   min-height: 100vh;
   padding: 32px;
-  background-color: var(--bg-dark);
+  background-color: var(--bg-light);
   color: var(--text-primary);
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Ensure responsiveness on smaller screens */

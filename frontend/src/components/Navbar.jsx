@@ -61,6 +61,13 @@ function Navbar() {
         }}
       >
         <Link
+          to="/"
+          style={getLinkStyle(isActive("/"))}
+        >
+          Home
+        </Link>
+
+        <Link
           to="/brand-guidelines"
           style={getLinkStyle(isActive("/brand-guidelines"))}
         >

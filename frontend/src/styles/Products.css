@@ -1,15 +1,17 @@
 :root {
-  --bg-dark: #0b1120;
-  --card-bg: #1e293b;
+  /* Light Mode Theme Variables */
+  --bg-light: #f8fafc;
+  --card-bg: #ffffff;
+  --card-inner: #f1f5f9;
   --orange: #ff751f;
   --orange-hover: #e05a00;
-  --border-slate: #334155;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --border-slate: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
 }
 
 .products-container {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-light);
   color: var(--text-main);
   min-height: 100vh;
   padding: 24px;
@@ -27,6 +29,7 @@
   border-radius: 14px;
   border: 1px solid var(--border-slate);
   margin-bottom: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .nav-logo {
@@ -48,7 +51,7 @@
 .nav-student {
   font-size: 0.85rem;
   color: var(--text-muted);
-  background: #0f172a;
+  background: var(--card-inner);
   padding: 6px 12px;
   border-radius: 20px;
   border: 1px solid var(--border-slate);
@@ -64,6 +67,7 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 117, 31, 0.25);
 }
 
 .nav-cart:hover {
@@ -73,7 +77,7 @@
 
 /* HERO */
 .hero {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
   border: 1px solid var(--border-slate);
   padding: 32px 28px;
   border-radius: 16px;
@@ -81,12 +85,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .hero-title {
   font-size: 2.2rem;
   font-weight: 800;
   margin-bottom: 4px;
+  color: var(--text-main);
 }
 
 .hero-title span {
@@ -101,9 +107,9 @@
 }
 
 .discount-pill {
-  background-color: rgba(255, 117, 31, 0.15);
+  background-color: #fff7ed;
   color: var(--orange);
-  border: 1px solid rgba(255, 117, 31, 0.3);
+  border: 1px solid #ffedd5;
   padding: 8px 16px;
   border-radius: 20px;
   font-weight: 700;
@@ -128,22 +134,24 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .filter-btn:hover {
   color: var(--text-main);
-  background-color: #273549;
+  background-color: var(--card-inner);
 }
 
 .filter-btn.active {
   background-color: var(--orange);
   color: #ffffff;
   border-color: var(--orange);
+  box-shadow: 0 4px 12px rgba(255, 117, 31, 0.25);
 }
 
 /* STUDENT BANNER */
 .student-banner {
-  background-color: #0f172a;
+  background-color: var(--card-inner);
   border: 1px dashed var(--border-slate);
   padding: 14px 20px;
   border-radius: 12px;
@@ -173,7 +181,7 @@
 
 /* PRODUCT GRID */
 .product-grid,
-  .product-list {
+.product-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
@@ -188,7 +196,7 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background-color: #1e293b;
+  background-color: var(--text-main);
   color: #ffffff;
   border: 1px solid var(--orange);
   padding: 14px 22px;
@@ -196,7 +204,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.3s ease;

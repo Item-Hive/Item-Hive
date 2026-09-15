@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Checkout.css";
+import YocoPayment from "../components/YocoPayment"; // 222567023 - Ricardo Mukwevho
 
 const CATALOG = {
   "white-tee": { name: "ItemHive White Tee", sub: "Classic Fit", price: 200, emoji: "👕", bg: "light" },
@@ -20,7 +21,6 @@ function Checkout() {
   const [payment, setPayment] = useState("YOCO");
   const [confirmation, setConfirmation] = useState(null);
 
-  // Load cart from localStorage
   useEffect(() => {
     try {
       const raw = localStorage.getItem(CART_KEY);
@@ -30,12 +30,11 @@ function Checkout() {
     }
   }, []);
 
-  // Sync cart across browser tabs
   useEffect(() => {
     const handleStorage = (e) => {
-      if (e.key === CART_KEY && !confirmation) {
+      if (e.key === CART_KEY &&!confirmation) {
         try {
-          setCart(e.newValue ? JSON.parse(e.newValue) : {});
+          setCart(e.newValue? JSON.parse(e.newValue) : {});
         } catch (err) {
           console.error("Storage sync error", err);
         }
@@ -50,11 +49,11 @@ function Checkout() {
     localStorage.setItem(CART_KEY, JSON.stringify(newCart));
   };
 
-  const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));
+  const money = (n) => "R" + (n % 1 === 0? n : n.toFixed(2));
 
   const items = Object.keys(cart)
-    .filter((id) => cart[id] > 0 && CATALOG[id])
-    .map((id) => {
+   .filter((id) => cart[id] > 0 && CATALOG[id])
+   .map((id) => {
       const p = CATALOG[id];
       const qty = cart[id];
       return {
@@ -71,7 +70,7 @@ function Checkout() {
     });
 
   const updateQty = (id, newQty) => {
-    const updated = { ...cart };
+    const updated = {...cart };
     if (newQty <= 0) {
       delete updated[id];
     } else {
@@ -81,7 +80,7 @@ function Checkout() {
   };
 
   const removeItem = (id) => {
-    const updated = { ...cart };
+    const updated = {...cart };
     delete updated[id];
     saveCart(updated);
   };
@@ -92,54 +91,41 @@ function Checkout() {
 
   const placeOrder = () => {
     setConfirmation({ total, payment });
-    saveCart({}); // clear cart on purchase
+    saveCart({});
   };
 
   return (
     <div className="checkout-container">
       <nav className="checkout-nav">
-        <Link className="nav-back" to="/products">
-          ← Back to Shop
-        </Link>
+        <Link className="nav-back" to="/products">← Back to Shop</Link>
         <span className="nav-title">Checkout</span>
-        <span className="nav-logo">
-          Item<span>Hive</span>
-        </span>
+        <span className="nav-logo">Item<span>Hive</span></span>
       </nav>
 
       <div className="checkout-page">
-        {/* Order Confirmation Screen */}
-        {confirmation ? (
+        {confirmation? (
           <div className="confirm-card">
             <div className="confirm-emoji">🎉</div>
             <div className="confirm-title">Order Placed Successfully!</div>
             <div className="confirm-detail">
-              Total charged: <strong>{money(confirmation.total)}</strong> via{" "}
-              <span>{confirmation.payment}</span>
+              Total charged: <strong>{money(confirmation.total)}</strong> via <span>{confirmation.payment}</span>
             </div>
-            <button className="confirm-btn" onClick={() => navigate("/products")}>
-              Continue Shopping
-            </button>
+            <button className="confirm-btn" onClick={() => navigate("/products")}>Continue Shopping</button>
           </div>
-        ) : items.length === 0 ? (
-          /* Empty Cart Screen */
+        ) : items.length === 0? (
           <div className="empty-state">
             <div className="empty-emoji">🛒</div>
             <div className="empty-title">Your cart is empty</div>
             <div className="empty-sub">Explore our ICT gear and add items to your cart!</div>
-            <button className="empty-btn" onClick={() => navigate("/products")}>
-              Browse Products
-            </button>
+            <button className="empty-btn" onClick={() => navigate("/products")}>Browse Products</button>
           </div>
         ) : (
-          /* Checkout Form */
           <>
             <div className="student-banner">
               <div className="banner-badge">-20% OFF</div>
               <div>Student discount auto-applied to your order!</div>
             </div>
 
-            {/* Cart Items */}
             <div className="card">
               <div className="card-head">Order Summary</div>
               <div className="card-body">
@@ -152,53 +138,28 @@ function Checkout() {
                         <div className="item-sub">{item.sub}</div>
                       </div>
                     </div>
-
                     <div className="qty-controls">
-                      <button
-                        className="qty-btn"
-                        onClick={() => updateQty(item.id, item.qty - 1)}
-                      >
-                        −
-                      </button>
+                      <button className="qty-btn" onClick={() => updateQty(item.id, item.qty - 1)}>−</button>
                       <span className="qty-val">{item.qty}</span>
-                      <button
-                        className="qty-btn"
-                        onClick={() => updateQty(item.id, item.qty + 1)}
-                      >
-                        +
-                      </button>
+                      <button className="qty-btn" onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
                     </div>
-
                     <div className="item-price">{money(item.lineTotal)}</div>
-                    <button
-                      className="remove-btn"
-                      title="Remove Item"
-                      onClick={() => removeItem(item.id)}
-                    >
-                      ×
-                    </button>
+                    <button className="remove-btn" onClick={() => removeItem(item.id)}>×</button>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Delivery / Pickup */}
             <div className="card">
               <div className="card-head">Delivery / Pickup Option</div>
               <div className="card-body">
                 <div className="del-grid">
-                  <div
-                    className={`del-opt ${delivery === "pickup" ? "active" : ""}`}
-                    onClick={() => setDelivery("pickup")}
-                  >
+                  <div className={`del-opt ${delivery === "pickup"? "active" : ""}`} onClick={() => setDelivery("pickup")}>
                     <div className="del-name">Campus Pickup</div>
                     <div className="del-desc">ICT Department Reception</div>
                     <div className="del-price">FREE</div>
                   </div>
-                  <div
-                    className={`del-opt ${delivery === "courier" ? "active" : ""}`}
-                    onClick={() => setDelivery("courier")}
-                  >
+                  <div className={`del-opt ${delivery === "courier"? "active" : ""}`} onClick={() => setDelivery("courier")}>
                     <div className="del-name">Standard Delivery</div>
                     <div className="del-desc">Direct to your residence</div>
                     <div className="del-price">FREE</div>
@@ -207,56 +168,39 @@ function Checkout() {
               </div>
             </div>
 
-            {/* Payment Options */}
             <div className="card">
               <div className="card-head">Payment Method</div>
               <div className="card-body">
                 <div className="pay-row">
                   {["YOCO", "SnapScan", "EFT"].map((method) => (
-                    <button
-                      key={method}
-                      className={`pay-opt ${payment === method ? "active" : ""}`}
-                      onClick={() => setPayment(method)}
-                    >
-                      {method}
-                    </button>
+                    <button key={method} className={`pay-opt ${payment === method? "active" : ""}`} onClick={() => setPayment(method)}>{method}</button>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Pricing Summary */}
             <div className="card">
               <div className="card-head">Price Breakdown</div>
               <div className="card-body">
                 {items.map((item) => (
                   <div className="total-row" key={item.id}>
-                    <span>
-                      {item.name} {item.qty > 1 ? `× ${item.qty}` : ""}
-                    </span>
+                    <span>{item.name} {item.qty > 1? `× ${item.qty}` : ""}</span>
                     <span>{money(item.origLineTotal)}</span>
                   </div>
                 ))}
-                <div className="total-row">
-                  <span>Subtotal</span>
-                  <span>{money(subtotal)}</span>
-                </div>
-                <div className="total-row discount">
-                  <span>
-                    Student Discount <span className="disc-badge">-20%</span>
-                  </span>
-                  <span>-{money(discountAmount)}</span>
-                </div>
-                <div className="total-row final">
-                  <span>Total</span>
-                  <span>{money(total)}</span>
-                </div>
+                <div className="total-row"><span>Subtotal</span><span>{money(subtotal)}</span></div>
+                <div className="total-row discount"><span>Student Discount <span className="disc-badge">-20%</span></span><span>-{money(discountAmount)}</span></div>
+                <div className="total-row final"><span>Total</span><span>{money(total)}</span></div>
               </div>
             </div>
 
-            <button className="order-btn" onClick={placeOrder}>
-              Place Order — {money(total)}
-            </button>
+            <button className="order-btn" onClick={placeOrder}>Place Order — {money(total)}</button>
+
+            {/* 222567023 - Yoco Payment Integration - Under checkout */}
+            <div style={{marginTop: '20px'}}>
+              <YocoPayment amount={total} />
+            </div>
+
           </>
         )}
       </div>

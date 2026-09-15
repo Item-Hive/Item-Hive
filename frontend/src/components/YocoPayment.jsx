@@ -1,30 +1,54 @@
-// 222567023 - Ricardo Mukwevho - Yoco dummy integration - White & Yellow theme
-import { useState } from 'react';
+// 230036937 - Yoco Payment Integration - Orange and White
+import { useState } from "react";
 
-export default function YocoPayment({ amount = 150 }) {
-  const [status, setStatus] = useState('');
+export default function YocoPayment({ amount, onSuccess }) {
+  const [processing, setProcessing] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handlePay = () => {
-    setStatus('Processing with Yoco...');
+    setProcessing(true);
     setTimeout(() => {
-      setStatus('✅ Payment Successful! (DUMMY - 222567023)');
-      alert('Yoco Payment Successful - R' + amount + ' - Student: 222567023');
-      window.location.href = '/';
+      setProcessing(false);
+      setSuccess(true);
+      if (onSuccess) {
+        onSuccess(amount);
+      }
     }, 1500);
   };
 
-  return (
-    <div style={{background: 'white', color: 'black', padding: '24px', borderRadius: '16px', border: '2px solid #FFCC00'}}>
-      <h3 style={{fontWeight: '800', color: 'black'}}>Pay with Yoco</h3>
-      <p style={{color: '#333'}}>Secure checkout - White & Yellow Theme</p>
-      <div style={{background: '#FFF9DB', padding: '12px', borderRadius: '8px', marginBottom: '16px', border: '1px solid #FFCC00'}}>
-        <p style={{color: 'black', margin: 0, fontWeight: 'bold'}}>Amount: R{amount}.00 ZAR</p>
+  if (success) {
+    return (
+      <div style={{ background: "#FFFFFF", border: "2px solid #FF6B00", padding: "20px", borderRadius: "12px", textAlign: "center" }}>
+        <h3 style={{ color: "#FF6B00" }}>✓ Payment Successful!</h3>
+        <p style={{ color: "#000", fontWeight: "bold" }}>Order Placed Successfully via YOCO</p>
+        <p>Student: 230036937</p>
+        <p style={{ fontWeight: "bold" }}>R{amount} charged</p>
+        <p style={{ fontSize: "12px" }}>Test card: 4242 4242 4242 4242</p>
       </div>
-      <button onClick={handlePay} style={{background: '#FFCC00', color: 'black', padding: '14px 24px', border: 'none', borderRadius: '10px', fontWeight: '900', cursor: 'pointer', width: '100%', fontSize: '16px'}}>
-        Pay R{amount} with Yoco
+    );
+  }
+
+  return (
+    <div style={{ background: "#FFFFFF", border: "2px solid #FF6B00", padding: "20px", borderRadius: "12px", marginTop: "20px" }}>
+      <h3 style={{ color: "#FF6B00" }}>Yoco Secure Payment - 230036937</h3>
+      <p style={{ color: "#000" }}>Amount to pay: <strong>R{amount}</strong></p>
+      <p style={{ fontSize: "12px", color: "#666" }}>Student: 230036937 | Test: 4242 4242 4242 4242</p>
+      <button
+        onClick={handlePay}
+        disabled={processing}
+        style={{ 
+          background: "#FF6B00", 
+          color: "#FFFFFF", 
+          padding: "12px 24px", 
+          border: "none", 
+          borderRadius: "8px", 
+          fontWeight: "bold", 
+          width: "100%", 
+          cursor: "pointer" 
+        }}
+      >
+        {processing ? "Processing..." : `Pay R${amount} with Yoco`}
       </button>
-      {status && <p style={{marginTop: '14px', fontWeight: 'bold', color: '#b58900'}}>{status}</p>}
-      <small style={{color: '#666'}}>Test Mode • 222567023-yoco</small>
     </div>
   );
 }

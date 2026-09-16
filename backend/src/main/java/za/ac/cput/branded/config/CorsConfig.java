@@ -16,7 +16,7 @@ public class CorsConfig {
                 registry.addMapping("/api/**")
                         .allowedOrigins(
                                 "http://localhost:5173",
-                                "https://your-frontend.onrender.com"
+                                "https://item-hive.vercel.app/"
                         )
                         .allowedMethods(
                                 "GET",

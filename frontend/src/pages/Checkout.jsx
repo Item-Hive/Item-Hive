@@ -196,7 +196,7 @@ function Checkout() {
 
             <button className="order-btn" onClick={placeOrder}>Place Order — {money(total)}</button>
 
-            {/* 222567023 - Yoco Payment Integration - Under checkout */}
+            {/* 230036937 - Yoco Payment Integration - Under checkout */}
             <div style={{marginTop: '20px'}}>
               <YocoPayment amount={total} />
             </div>

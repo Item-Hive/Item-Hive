@@ -1,60 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ProductCard from "../components/ProductCard"; 
+import ProductCard from "../components/ProductCard";
 import "../styles/Products.css";
 import whiteTee from "../assets/back-white-tshirt.JPG";
 import orangeTee from "../assets/back-orange-tshirt.JPG";
 import navyTee from "../assets/back-navy-tshirt.JPG";
 
-const PRODUCTS = [
-  {
-    id: "white-tee",
-    name: "ItemHive White Tee",
-    category: "tshirt",
-    color: "White",
-    description: "Classic ICT-branded T-shirt in crisp white.",
-    price: 200,
-    origPrice: 250,
-    sizes: "S, M, L, XL",
-    rating: 4.5,
-    image: whiteTee
-  },
-  {
-    id: "orange-tee",
-    name: "ICT Orange Tee",
-    category: "tshirt",
-    color: "Orange",
-    description: "Bright orange tee with bold ICT branding.",
-    price: 150,
-    origPrice: 190,
-    sizes: "S, M, L, XL",
-    rating: 4.2,
-    image: orangeTee
-  },
-  {
-    id: "navy-tee",
-    name: "ICT Navy Tee",
-    category: "tshirt",
-    color: "Blue",
-    description: "Navy tee for a modern ICT look.",
-    price: 250,
-    origPrice: 300,
-    sizes: "S, M, L, XL",
-    rating: 4.7,
-    image: navyTee
-  }
-];
-
 const CART_KEY = "ict_branded_cart";
+const API_URL = import.meta.env.VITE_API_URL;
+
+// Fallback images cycle through since the backend has no image field yet
+const FALLBACK_IMAGES = [whiteTee, orangeTee, navyTee];
 
 export default function Products() {
   const navigate = useNavigate();
 
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
-  // Initialize state from LocalStorage
   const [cart, setCart] = useState(() => {
     try {
       const raw = localStorage.getItem(CART_KEY);
@@ -64,13 +31,45 @@ export default function Products() {
     }
   });
 
-  // Sync state with LocalStorage helper
+  // Fetch real items from the backend
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/item`);
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+        const data = await res.json();
+
+        // Map backend fields to what ProductCard expects
+        const mapped = data.map((item, index) => ({
+          id: item.id,
+          name: item.name,
+          category: item.category?.name?.toLowerCase() || "tshirt",
+          color: item.category?.name || "",
+          description: item.description,
+          price: item.price,
+          origPrice: null, // not available from backend yet
+          sizes: null,      // not available from backend yet
+          rating: item.rating,
+          image: FALLBACK_IMAGES[index % FALLBACK_IMAGES.length],
+        }));
+
+        setItems(mapped);
+      } catch (err) {
+        console.error("Failed to fetch items:", err);
+        setFetchError("Could not load products. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
   const saveCart = (newCart) => {
     setCart(newCart);
     localStorage.setItem(CART_KEY, JSON.stringify(newCart));
   };
 
-  // Sync changes across browser tabs
   useEffect(() => {
     const handleStorage = (e) => {
       if (e.key === CART_KEY) {
@@ -87,7 +86,6 @@ export default function Products() {
 
   const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
-  // Safely handles adding items to cart
   const addToCart = (product, e) => {
     if (e && e.stopPropagation) e.stopPropagation();
 
@@ -119,7 +117,6 @@ export default function Products() {
     navigate("/checkout", { state: { cart: currentCart, selectedProduct: product } });
   };
 
-  // Auto-hide toast after 2 seconds
   useEffect(() => {
     if (showToast) {
       const timer = setTimeout(() => setShowToast(false), 2000);
@@ -129,12 +126,11 @@ export default function Products() {
 
   const filteredProducts =
     activeFilter === "all"
-      ? PRODUCTS
-      : PRODUCTS.filter((p) => p.category === activeFilter);
+      ? items
+      : items.filter((p) => p.category === activeFilter);
 
   return (
     <div className="products-container">
-      {/* Top Header Bar */}
       <nav className="products-nav">
         <div className="nav-logo">
           Item<span>Hive</span>
@@ -147,7 +143,6 @@ export default function Products() {
         </div>
       </nav>
 
-      {/* Hero Banner */}
       <div className="hero">
         <div>
           <div className="hero-title">
@@ -158,7 +153,6 @@ export default function Products() {
         <div className="discount-pill">-20% Student</div>
       </div>
 
-      {/* Category Filters */}
       <div className="filter-bar">
         {[
           { key: "all", label: "All" },
@@ -177,7 +171,6 @@ export default function Products() {
       </div>
 
       <div className="page-body">
-        {/* Discount Notification Banner */}
         <div className="student-banner">
           <div className="banner-badge">-20% OFF</div>
           <div className="banner-text">
@@ -185,21 +178,23 @@ export default function Products() {
           </div>
         </div>
 
-        {/* Product Cards Grid */}
+        {loading && <p style={{ textAlign: "center" }}>Loading products...</p>}
+        {fetchError && <p style={{ textAlign: "center", color: "red" }}>{fetchError}</p>}
+        {!loading && !fetchError && filteredProducts.length === 0 && (
+          <p style={{ textAlign: "center" }}>No products found.</p>
+        )}
+
         <div className="product-grid" id="product-grid">
-          {filteredProducts.map((product) => {
-            return (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={(e) => addToCart(product, e)}
-              />
-            );
-          })}
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddToCart={(e) => addToCart(product, e)}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Toast Notification */}
       <div className={`toast ${showToast ? "show" : ""}`} id="toast">
         <span className="toast-icon">🛍️</span>
         <span>

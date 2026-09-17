@@ -39,7 +39,6 @@ export default function Products() {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         const data = await res.json();
 
-        // Map backend fields to what ProductCard expects
         const mapped = data.map((item, index) => ({
           id: item.id,
           name: item.name,
@@ -47,8 +46,8 @@ export default function Products() {
           color: item.category?.name || "",
           description: item.description,
           price: item.price,
-          origPrice: null, // not available from backend yet
-          sizes: null,      // not available from backend yet
+          origPrice: null,
+          sizes: null,
           rating: item.rating,
           image: FALLBACK_IMAGES[index % FALLBACK_IMAGES.length],
         }));
@@ -86,7 +85,8 @@ export default function Products() {
 
   const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
-  const addToCart = (product, e) => {
+  // Adds to local cart AND persists a cart entry to the backend
+  const addToCart = async (product, e) => {
     if (e && e.stopPropagation) e.stopPropagation();
 
     const productId = product?.id;
@@ -98,10 +98,35 @@ export default function Products() {
       ...cart,
       [productId]: (cart[productId] || 0) + 1,
     };
-
     saveCart(updatedCart);
     setToastMessage(productName);
     setShowToast(true);
+
+    const quantity = updatedCart[productId];
+    const subtotal = product.price * quantity;
+    const serviceFee = 0;
+    const total = subtotal + serviceFee;
+
+    const cartEntry = {
+      id: crypto.randomUUID(),
+      itemName: product.name,
+      price: product.price,
+      quantity,
+      subtotal,
+      serviceFee,
+      total,
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/api/cart`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cartEntry),
+      });
+      if (!res.ok) throw new Error(`Cart save failed: ${res.status}`);
+    } catch (err) {
+      console.error("Failed to save cart entry to backend:", err);
+    }
   };
 
   const goToCheckout = (product = null) => {

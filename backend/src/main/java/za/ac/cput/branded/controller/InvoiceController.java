@@ -6,10 +6,12 @@ import za.ac.cput.branded.service.InvoiceService;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/invoice")
 public class InvoiceController {
     private final InvoiceService invoiceService;
 
-    private InvoiceController(InvoiceService invoiceService){
+    public InvoiceController(InvoiceService invoiceService){
         this.invoiceService = invoiceService;
     }
     @PostMapping
@@ -29,7 +31,7 @@ public class InvoiceController {
         return invoiceService.getAll();
     }
     @DeleteMapping("/{id}")
-    public void delete(String id){
+    public void delete(@PathVariable String id){
         invoiceService.delete(id);
     }
 }

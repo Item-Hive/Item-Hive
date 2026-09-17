@@ -79,7 +79,7 @@ const ProductCard = ({ product, onAddToCart }) => {
         {/* Attributes (Color & Sizes Tags) */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '14px' }}>
           <span style={tagStyle}>
-            <strong style={{ color: '#64748B', marginRight: '4px' }}>Color:</strong> {color}
+            <strong style={{ color: '#64748B', marginRight: '4px' }}>Category:</strong> {color}
           </span>
           <span style={tagStyle}>
             <strong style={{ color: '#64748B', marginRight: '4px' }}>Sizes:</strong> {sizes}

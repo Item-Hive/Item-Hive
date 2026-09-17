@@ -1,0 +1,240 @@
+/* ==========================================
+   Global / Layout & Color Variables
+   ========================================== */
+:root {
+  --navy: #101D51;
+  --orange: #FF6B00;
+  --cyan: #00A3B5;
+  --bg-light: #f8f9fa;
+  --text-dark: #222222;
+  --text-light: #ffffff;
+}
+
+/* Fix default browser blue links across header/nav */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================
+   Navbar Styling (Fixes Blue Link Issue)
+   ========================================== */
+.navbar, nav {
+  background-color: var(--navy);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar a, nav a {
+  color: var(--text-light) !important; /* Force white text over blue */
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 1.5rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.navbar a:hover, nav a:hover {
+  color: var(--orange) !important; /* Orange hover effect */
+}
+
+/* ==========================================
+   Home Container & Hero Section
+   ========================================== */
+.home-container {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-dark);
+  background-color: #f4f6f9;
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+
+.hero-section {
+  background: #ffffff;
+  border-radius: 12px;
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.home-logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.brand-orange {
+  color: var(--orange);
+}
+
+.hero-tagline {
+  color: var(--cyan);
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.hero-description {
+  max-width: 650px;
+  margin: 0 auto 2rem;
+  color: #555555;
+  line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--navy);
+  color: var(--text-light);
+  padding: 0.75rem 1.75rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0b143a;
+}
+
+.btn-secondary {
+  border: 2px solid var(--cyan);
+  color: var(--cyan);
+  background: transparent;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--cyan);
+  color: var(--text-light);
+}
+
+/* ==========================================
+   Value Proposition Banner
+   ========================================== */
+.value-prop-section {
+  max-width: 1000px;
+  margin: 2rem auto;
+}
+
+.value-prop-card {
+  background-color: var(--navy);
+  color: var(--text-light);
+  padding: 2.5rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.value-prop-card h2 {
+  color: var(--orange);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.value-prop-card p {
+  line-height: 1.6;
+  max-width: 850px;
+  margin: 0 auto 1rem;
+  color: #e0e6ed;
+}
+
+/* ==========================================
+   About Section & Pillars Grid
+   ========================================== */
+.about-section {
+  max-width: 1000px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+.section-title {
+  text-align: center;
+  color: var(--navy);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.pillar-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  border: 1px solid #eef2f5;
+}
+
+.pillar-header {
+  border-bottom: 2px solid;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.pillar-header.orange { border-color: var(--orange); color: var(--orange); }
+.pillar-header.cyan { border-color: var(--cyan); color: var(--cyan); }
+.pillar-header.navy { border-color: var(--navy); color: var(--navy); }
+
+.pillar-card p, .values-list {
+  color: #555555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.values-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.values-list li {
+  margin-bottom: 0.75rem;
+}
+
+/* ==========================================
+   CTA Section
+   ========================================== */
+.cta-section {
+  max-width: 1000px;
+  margin: 3rem auto 1rem;
+  text-align: center;
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+}
+
+.cta-section h2 {
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.cta-section p {
+  color: #666666;
+  margin-bottom: 1.5rem;
+}

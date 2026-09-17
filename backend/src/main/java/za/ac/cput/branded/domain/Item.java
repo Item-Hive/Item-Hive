@@ -1,5 +1,7 @@
 package za.ac.cput.branded.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -33,12 +35,35 @@ public class Item {
     public Item(Builder builder) {
         this.id = builder.id;
         this.category = builder.category;
-        this.name = builder.id;
+        this.name = builder.name;
         this.description = builder.description;
         this.price = builder.price;
         this.stockQuantity = builder.stockQuantity;
         this.rating = builder.rating;
         this.review = builder.review;
+    }
+
+    // Lets Jackson deserialize incoming JSON (e.g. @RequestBody) directly,
+    // since this class has no setters.
+    @JsonCreator
+    public Item(
+            @JsonProperty("id") String id,
+            @JsonProperty("category") Category category,
+            @JsonProperty("name") String name,
+            @JsonProperty("description") String description,
+            @JsonProperty("price") double price,
+            @JsonProperty("stockQuantity") int stockQuantity,
+            @JsonProperty("rating") String rating,
+            @JsonProperty("review") String review
+    ) {
+        this.id = id;
+        this.category = category;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.rating = rating;
+        this.review = review;
     }
 
     public String getId() {

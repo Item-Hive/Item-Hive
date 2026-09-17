@@ -1,13 +1,16 @@
 package za.ac.cput.branded.service;
+
+import org.springframework.stereotype.Service;
 import za.ac.cput.branded.domain.Card;
 import za.ac.cput.branded.repository.CardRepository;
 
 import java.util.List;
 
+@Service
 public class CardService implements ICardService {
     private final CardRepository cardRepository;
 
-    private CardService (CardRepository cardRepository){
+    public CardService(CardRepository cardRepository) {
         this.cardRepository = cardRepository;
     }
 

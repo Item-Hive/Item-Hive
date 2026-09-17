@@ -1,19 +1,22 @@
 package za.ac.cput.branded.service;
+
+import org.springframework.stereotype.Service;
 import za.ac.cput.branded.domain.Receipt;
 import za.ac.cput.branded.repository.ReceiptRepository;
 
 import java.util.List;
 
-public class ReceiptService implements IReceiptService{
+@Service
+public class ReceiptService implements IReceiptService {
     private final ReceiptRepository receiptRepository;
 
-    private ReceiptService(ReceiptRepository receiptRepository){
+    public ReceiptService(ReceiptRepository receiptRepository) {
         this.receiptRepository = receiptRepository;
     }
 
     @Override
     public Receipt create(Receipt slip) {
-        if (slip == null)return null;
+        if (slip == null) return null;
         return receiptRepository.save(slip);
     }
 
@@ -24,7 +27,7 @@ public class ReceiptService implements IReceiptService{
 
     @Override
     public Receipt update(Receipt slip) {
-        if (slip == null)return null;
+        if (slip == null) return null;
         return receiptRepository.save(slip);
     }
 

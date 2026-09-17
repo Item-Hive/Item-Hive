@@ -3,24 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/Checkout.css";
 import YocoPayment from "../components/YocoPayment"; // 222567023 - Ricardo Mukwevho
 
-const CATALOG = {
-  "white-tee": { name: "ItemHive White Tee", sub: "Classic Fit", price: 200, emoji: "👕", bg: "light" },
-  "orange-tee": { name: "ICT Orange Tee", sub: "Department Color", price: 150, emoji: "🟧", bg: "orange" },
-  "navy-tee": { name: "ICT Navy Tee", sub: "Modern Fit", price: 250, emoji: "👔", bg: "navy" },
-  "crop": { name: "ICT Crop Top", sub: "Women's Fit", price: 130, emoji: "👚", bg: "teal" },
-  "oversized": { name: "ICT Oversized Hoodie", sub: "Unisex", price: 180, emoji: "🧥", bg: "slate" },
-};
-
 const CART_KEY = "ict_branded_cart";
 const DISCOUNT = 0.2;
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Checkout() {
   const navigate = useNavigate();
   const [cart, setCart] = useState({});
+  const [catalog, setCatalog] = useState({});
+  const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [delivery, setDelivery] = useState("pickup");
   const [payment, setPayment] = useState("YOCO");
   const [confirmation, setConfirmation] = useState(null);
+  const [placingOrder, setPlacingOrder] = useState(false);
+  const [orderError, setOrderError] = useState(null);
 
+  // Load cart from localStorage
   useEffect(() => {
     try {
       const raw = localStorage.getItem(CART_KEY);
@@ -30,11 +28,38 @@ function Checkout() {
     }
   }, []);
 
+  // Fetch real items and build a lookup map by id
+  useEffect(() => {
+    const fetchCatalog = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/item`);
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+        const data = await res.json();
+
+        const map = {};
+        data.forEach((item) => {
+          map[item.id] = {
+            name: item.name,
+            sub: item.category?.name || "",
+            price: item.price,
+          };
+        });
+        setCatalog(map);
+      } catch (err) {
+        console.error("Failed to fetch catalog for checkout:", err);
+      } finally {
+        setLoadingCatalog(false);
+      }
+    };
+
+    fetchCatalog();
+  }, []);
+
   useEffect(() => {
     const handleStorage = (e) => {
-      if (e.key === CART_KEY &&!confirmation) {
+      if (e.key === CART_KEY && !confirmation) {
         try {
-          setCart(e.newValue? JSON.parse(e.newValue) : {});
+          setCart(e.newValue ? JSON.parse(e.newValue) : {});
         } catch (err) {
           console.error("Storage sync error", err);
         }
@@ -49,20 +74,18 @@ function Checkout() {
     localStorage.setItem(CART_KEY, JSON.stringify(newCart));
   };
 
-  const money = (n) => "R" + (n % 1 === 0? n : n.toFixed(2));
+  const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));
 
   const items = Object.keys(cart)
-   .filter((id) => cart[id] > 0 && CATALOG[id])
-   .map((id) => {
-      const p = CATALOG[id];
+    .filter((id) => cart[id] > 0 && catalog[id])
+    .map((id) => {
+      const p = catalog[id];
       const qty = cart[id];
       return {
         id,
         qty,
         name: p.name,
         sub: p.sub,
-        emoji: p.emoji,
-        bg: p.bg,
         price: p.price,
         origLineTotal: p.price * qty,
         lineTotal: Math.round(p.price * (1 - DISCOUNT)) * qty,
@@ -70,7 +93,7 @@ function Checkout() {
     });
 
   const updateQty = (id, newQty) => {
-    const updated = {...cart };
+    const updated = { ...cart };
     if (newQty <= 0) {
       delete updated[id];
     } else {
@@ -80,7 +103,7 @@ function Checkout() {
   };
 
   const removeItem = (id) => {
-    const updated = {...cart };
+    const updated = { ...cart };
     delete updated[id];
     saveCart(updated);
   };
@@ -89,9 +112,47 @@ function Checkout() {
   const discountAmount = Math.round(subtotal * DISCOUNT);
   const total = subtotal - discountAmount;
 
-  const placeOrder = () => {
-    setConfirmation({ total, payment });
-    saveCart({});
+  const placeOrder = async () => {
+    setPlacingOrder(true);
+    setOrderError(null);
+
+    try {
+      // One invoice per cart line item, matching the current backend schema
+      const invoicePromises = items.map((item) => {
+        const invoicePayload = {
+          id: crypto.randomUUID(),
+          receipt: {
+            itemName: item.name,
+            price: item.price,
+            quantity: item.qty,
+            subtotal: item.origLineTotal,
+            serviceFee: 0,
+            total: item.lineTotal,
+          },
+        };
+
+        return fetch(`${API_URL}/api/invoice`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(invoicePayload),
+        });
+      });
+
+      const results = await Promise.all(invoicePromises);
+      const failed = results.some((res) => !res.ok);
+
+      if (failed) {
+        throw new Error("One or more invoices failed to save");
+      }
+
+      setConfirmation({ total, payment });
+      saveCart({});
+    } catch (err) {
+      console.error("Failed to place order:", err);
+      setOrderError("Something went wrong placing your order. Please try again.");
+    } finally {
+      setPlacingOrder(false);
+    }
   };
 
   return (
@@ -103,7 +164,7 @@ function Checkout() {
       </nav>
 
       <div className="checkout-page">
-        {confirmation? (
+        {confirmation ? (
           <div className="confirm-card">
             <div className="confirm-emoji">🎉</div>
             <div className="confirm-title">Order Placed Successfully!</div>
@@ -112,7 +173,11 @@ function Checkout() {
             </div>
             <button className="confirm-btn" onClick={() => navigate("/products")}>Continue Shopping</button>
           </div>
-        ) : items.length === 0? (
+        ) : loadingCatalog ? (
+          <div className="empty-state">
+            <div className="empty-title">Loading your order...</div>
+          </div>
+        ) : items.length === 0 ? (
           <div className="empty-state">
             <div className="empty-emoji">🛒</div>
             <div className="empty-title">Your cart is empty</div>
@@ -132,7 +197,6 @@ function Checkout() {
                 {items.map((item) => (
                   <div className="order-item" key={item.id}>
                     <div className="item-left">
-                      <div className={`item-dot ${item.bg}`}>{item.emoji}</div>
                       <div>
                         <div className="item-name">{item.name}</div>
                         <div className="item-sub">{item.sub}</div>
@@ -154,12 +218,12 @@ function Checkout() {
               <div className="card-head">Delivery / Pickup Option</div>
               <div className="card-body">
                 <div className="del-grid">
-                  <div className={`del-opt ${delivery === "pickup"? "active" : ""}`} onClick={() => setDelivery("pickup")}>
+                  <div className={`del-opt ${delivery === "pickup" ? "active" : ""}`} onClick={() => setDelivery("pickup")}>
                     <div className="del-name">Campus Pickup</div>
                     <div className="del-desc">ICT Department Reception</div>
                     <div className="del-price">FREE</div>
                   </div>
-                  <div className={`del-opt ${delivery === "courier"? "active" : ""}`} onClick={() => setDelivery("courier")}>
+                  <div className={`del-opt ${delivery === "courier" ? "active" : ""}`} onClick={() => setDelivery("courier")}>
                     <div className="del-name">Standard Delivery</div>
                     <div className="del-desc">Direct to your residence</div>
                     <div className="del-price">FREE</div>
@@ -173,7 +237,7 @@ function Checkout() {
               <div className="card-body">
                 <div className="pay-row">
                   {["YOCO", "SnapScan", "EFT"].map((method) => (
-                    <button key={method} className={`pay-opt ${payment === method? "active" : ""}`} onClick={() => setPayment(method)}>{method}</button>
+                    <button key={method} className={`pay-opt ${payment === method ? "active" : ""}`} onClick={() => setPayment(method)}>{method}</button>
                   ))}
                 </div>
               </div>
@@ -184,7 +248,7 @@ function Checkout() {
               <div className="card-body">
                 {items.map((item) => (
                   <div className="total-row" key={item.id}>
-                    <span>{item.name} {item.qty > 1? `× ${item.qty}` : ""}</span>
+                    <span>{item.name} {item.qty > 1 ? `× ${item.qty}` : ""}</span>
                     <span>{money(item.origLineTotal)}</span>
                   </div>
                 ))}
@@ -194,13 +258,17 @@ function Checkout() {
               </div>
             </div>
 
-            <button className="order-btn" onClick={placeOrder}>Place Order — {money(total)}</button>
+            {orderError && (
+              <p style={{ color: "red", textAlign: "center" }}>{orderError}</p>
+            )}
 
-            {/* 230036937 - Yoco Payment Integration - Under checkout */}
-            <div style={{marginTop: '20px'}}>
+            <button className="order-btn" onClick={placeOrder} disabled={placingOrder}>
+              {placingOrder ? "Placing Order..." : `Place Order — ${money(total)}`}
+            </button>
+
+            <div style={{ marginTop: '20px' }}>
               <YocoPayment amount={total} />
             </div>
-
           </>
         )}
       </div>

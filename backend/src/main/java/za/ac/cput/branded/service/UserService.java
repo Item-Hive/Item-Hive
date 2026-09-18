@@ -29,10 +29,10 @@ public class UserService implements IUserService {
         String hashedPassword = passwordEncoder.encode(request.password);
         switch (request.role.toLowerCase()) {
             case "student":
-                user = BrandedFactory.createStudent(request.studentNumber, request.email, hashedPassword);
+                user = BrandedFactory.createStudent(request.studentNumber, "", hashedPassword);
                 break;
             case "admin":
-                user = BrandedFactory.createAdmin(request.idNumber, request.email, hashedPassword);
+                user = BrandedFactory.createAdmin(request.idNumber, "", hashedPassword);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid role");
@@ -46,10 +46,10 @@ public class UserService implements IUserService {
         String hashedPassword = passwordEncoder.encode(request.password);
         switch (request.role.toLowerCase()) {
             case "student":
-                user = BrandedFactory.createStudent(request.studentNumber, request.email, hashedPassword);
+                user = BrandedFactory.createStudent(request.studentNumber, "", hashedPassword);
                 break;
             case "admin":
-                user = BrandedFactory.createAdmin(request.idNumber, request.email, hashedPassword);
+                user = BrandedFactory.createAdmin(request.idNumber, "", hashedPassword);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid role");

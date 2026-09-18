@@ -1,18 +1,16 @@
 package za.ac.cput.branded.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "User")
+@Table(name = "app_users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type")
 public abstract class User {
     @Id
-    private String  id;
+    private String id;
     private String email;
     private String password;
-
-
 
     protected User(){
 
@@ -42,19 +40,16 @@ public abstract class User {
         this.email = email;
     }
 
-
-
     public User (Builder builder){
-    this.id = builder.id;
-    this.email = builder.email;
-    this.password = builder.password;
-
+        this.id = builder.id;
+        this.email = builder.email;
+        this.password = builder.password;
     }
+
     public static abstract class Builder {
         private String id;
         private String email;
         private String password;
-
 
         public Builder setId(String id){
             this.id = id;
@@ -71,5 +66,4 @@ public abstract class User {
 
         public abstract User build();
     }
-
 }

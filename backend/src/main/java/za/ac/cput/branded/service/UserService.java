@@ -1,6 +1,7 @@
 package za.ac.cput.branded.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import za.ac.cput.branded.domain.*;
 import za.ac.cput.branded.factory.BrandedFactory;
 import za.ac.cput.branded.repository.AdminRepository;
@@ -39,7 +40,38 @@ public class UserService implements IUserService {
         return userRepository.save(user);
     }
 
-    // login: student number + raw password -> matching Student, or null if no match
+    @Override
+    public User update(UserDTO request) {
+        User user;
+        String hashedPassword = passwordEncoder.encode(request.password);
+        switch (request.role.toLowerCase()) {
+            case "student":
+                user = BrandedFactory.createStudent(request.studentNumber, request.email, hashedPassword);
+                break;
+            case "admin":
+                user = BrandedFactory.createAdmin(request.idNumber, request.email, hashedPassword);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid role");
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User read(String id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public void delete(String id) {
+        userRepository.deleteById(id);
+    }
+
     public Student loginStudent(String studentNumber, String rawPassword) {
         Student student = studentRepository.findByStudentNumber(studentNumber);
         if (student == null) return null;
@@ -53,7 +85,4 @@ public class UserService implements IUserService {
         if (!passwordEncoder.matches(rawPassword, admin.getPassword())) return null;
         return admin;
     }
-
-    // ...update(), read(), getAll(), delete() stay the same as before,
-    // except update() should get the same hashedPassword treatment as create()
 }

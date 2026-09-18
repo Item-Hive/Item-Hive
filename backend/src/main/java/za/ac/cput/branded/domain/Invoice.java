@@ -1,5 +1,7 @@
 package za.ac.cput.branded.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +19,17 @@ public class Invoice {
     public Invoice(Builder builder){
         this.id = builder.id;
         this.receipt = builder.receipt;
+    }
+
+    // Lets Jackson deserialize incoming JSON (e.g. @RequestBody) directly,
+    // since this class has no setters.
+    @JsonCreator
+    public Invoice(
+            @JsonProperty("id") String id,
+            @JsonProperty("receipt") CartDetails receipt
+    ) {
+        this.id = id;
+        this.receipt = receipt;
     }
 
     public String getId() {

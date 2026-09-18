@@ -8,12 +8,9 @@ import jakarta.persistence.Entity;
 public class Student extends User{
     private String studentNumber;
 
-   // Student.java
     private Student(Builder builder){
-    super(builder);
-    this.studentNumber = builder.studentNumber;
-}
-
+        super(builder);
+        this.studentNumber = builder.studentNumber;
     }
     protected Student(){}
 

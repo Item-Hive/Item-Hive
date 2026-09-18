@@ -1,5 +1,7 @@
 package za.ac.cput.branded.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -22,7 +24,24 @@ public class CartDetails {
         this.total = builder.total;
     }
 
-
+    // Lets Jackson deserialize incoming JSON (e.g. @RequestBody) directly,
+    // since this class has no setters.
+    @JsonCreator
+    public CartDetails(
+            @JsonProperty("itemName") String itemName,
+            @JsonProperty("price") double price,
+            @JsonProperty("quantity") int quantity,
+            @JsonProperty("subtotal") double subtotal,
+            @JsonProperty("serviceFee") double serviceFee,
+            @JsonProperty("total") double total
+    ) {
+        this.itemName = itemName;
+        this.price = price;
+        this.quantity = quantity;
+        this.subtotal = subtotal;
+        this.serviceFee = serviceFee;
+        this.total = total;
+    }
 
     public String getItemName() {
         return itemName;

@@ -8,11 +8,9 @@ import jakarta.persistence.Entity;
 public class Admin extends User{
     private String idNumber;
 
-    // Admin.java
     public Admin(Builder builder){
-    super(builder);
-    this.idNumber = builder.idNumber;
-}
+        super(builder);
+        this.idNumber = builder.idNumber;
     }
     protected Admin(){
 

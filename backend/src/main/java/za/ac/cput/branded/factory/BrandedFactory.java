@@ -3,6 +3,9 @@ package za.ac.cput.branded.factory;
 import za.ac.cput.branded.domain.*;
 
 import java.util.Date;
+import java.util.UUID;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 public class BrandedFactory {
     public static Item createItem(String id, Category category , String name, String description, double price, int stockQuantity, String rating, String review){
@@ -59,5 +62,25 @@ public static Invoice createInvoice(String id,CartDetails cartDetails){
                 .setCartDetails(cartDetails)
                 .build();
 }
+public static Student createStudent(String studentNumber, String email, String password) {
+    return new Student.Builder()
+            .setId(generateId("ID-"))
+            .setEmail(email)
+            .setPassword(password)
+            .setStudentNumber(studentNumber)
+            .build();
+}
 
+public static Admin createAdmin(String idNumber, String email, String password) {
+    return new Admin.Builder()
+            .setId(generateId("ID-"))
+            .setEmail(email)
+            .setPassword(password)
+            .setIdNumber(idNumber)
+            .build();
+
+    }
+    public static String generateId(String idPrefix) {
+        return idPrefix + UUID.randomUUID();
+    }
 }

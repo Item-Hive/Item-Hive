@@ -20,6 +20,7 @@ public class AuthController {
     public ResponseEntity<Student> loginStudent(@RequestBody LoginRequest request) {
         Student student = service.loginStudent(request.username, request.password);
         if (student == null) return ResponseEntity.status(401).build();
+        student.setPassword(null);
         return ResponseEntity.ok(student);
     }
 
@@ -27,6 +28,7 @@ public class AuthController {
     public ResponseEntity<Admin> loginAdmin(@RequestBody LoginRequest request) {
         Admin admin = service.loginAdmin(request.username, request.password);
         if (admin == null) return ResponseEntity.status(401).build();
+        admin.setPassword(null);
         return ResponseEntity.ok(admin);
     }
 

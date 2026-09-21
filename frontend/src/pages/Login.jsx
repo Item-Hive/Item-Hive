@@ -1,23 +1,61 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [studentNumber, setStudentNumber] = useState("");
+  const [role, setRole] = useState("student");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/products");
+    setError(null);
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        const body = {
+          role,
+          password,
+          ...(role === "student" ? { studentNumber: identifier } : { idNumber: identifier }),
+        };
+        const res = await fetch(`${API_URL}/api/user`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error("Registration failed. That number may already be in use.");
+        setIsSignUp(false);
+        setError(null);
+      } else {
+        const endpoint = role === "student" ? "login/student" : "login/admin";
+        const res = await fetch(`${API_URL}/api/auth/${endpoint}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: identifier, password }),
+        });
+        if (!res.ok) throw new Error("Invalid student number/ID or password.");
+        const user = await res.json();
+        localStorage.setItem("ict_branded_user", JSON.stringify(user));
+        navigate("/products");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        {/* Brand Logo */}
         <div style={logoWrapperStyle}>
           <img
             src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png"
@@ -26,40 +64,38 @@ function Login() {
           />
         </div>
 
-        {/* Header */}
         <h2 style={titleStyle}>
           Welcome to <span style={{ color: "#F97316" }}>ItemHive</span>
         </h2>
         <p style={subtitleStyle}>Sign in to access your store dashboard</p>
 
-        {/* Tab Toggle */}
         <div style={toggleContainerStyle}>
-          <button
-            type="button"
-            style={getToggleStyle(!isSignUp)}
-            onClick={() => setIsSignUp(false)}
-          >
+          <button type="button" style={getToggleStyle(!isSignUp)} onClick={() => setIsSignUp(false)}>
             Sign In
           </button>
-          <button
-            type="button"
-            style={getToggleStyle(isSignUp)}
-            onClick={() => setIsSignUp(true)}
-          >
+          <button type="button" style={getToggleStyle(isSignUp)} onClick={() => setIsSignUp(true)}>
             Sign Up
           </button>
         </div>
 
-        {/* Form Inputs */}
+        <div style={toggleContainerStyle}>
+          <button type="button" style={getToggleStyle(role === "student")} onClick={() => setRole("student")}>
+            Student
+          </button>
+          <button type="button" style={getToggleStyle(role === "admin")} onClick={() => setRole("admin")}>
+            Admin
+          </button>
+        </div>
+
         <form style={formStyle} onSubmit={handleSubmit}>
           <div style={inputGroupStyle}>
-            <label style={labelStyle}>Student Number</label>
+            <label style={labelStyle}>{role === "student" ? "Student Number" : "Staff ID Number"}</label>
             <input
               type="text"
-              placeholder="e.g. 219012345"
+              placeholder={role === "student" ? "e.g. 219012345" : "e.g. ADM001"}
               style={inputStyle}
-              value={studentNumber}
-              onChange={(e) => setStudentNumber(e.target.value)}
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               required
             />
           </div>
@@ -86,8 +122,10 @@ function Login() {
             Show Password
           </label>
 
-          <button type="submit" style={submitBtnStyle}>
-            {isSignUp ? "Create Account" : "Sign In"}
+          {error && <p style={{ color: "#DC2626", fontSize: "0.85rem", margin: 0 }}>{error}</p>}
+
+          <button type="submit" style={submitBtnStyle} disabled={loading}>
+            {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
           </button>
         </form>
       </div>
@@ -95,13 +133,12 @@ function Login() {
   );
 }
 
-// MODERN LIGHT STYLES
 const containerStyle = {
   minHeight: "100vh",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "#F8FAFC", /* Light gray/slate background */
+  backgroundColor: "#F8FAFC",
   padding: "20px",
   boxSizing: "border-box",
   fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",

@@ -9,6 +9,7 @@ const DISCOUNT = 0.2;
 const API_URL = import.meta.env.VITE_API_URL;
 const BANKS = ["FNB", "Standard Bank", "ABSA", "Nedbank", "Capitec"];
 const PAYMENT_METHODS = ["YOCO", "SnapScan", "EFT"];
+const RESIDENCES = ["Catsville", "St Peters", "Cape Suites"];
 
 const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));
 
@@ -20,12 +21,25 @@ const getStudentNumber = () => {
   }
 };
 
+const fieldLabelStyle = { fontSize: "0.85rem", fontWeight: 600, color: "#334155" };
+const fieldStyle = {
+  width: "100%",
+  padding: "10px",
+  marginTop: "6px",
+  borderRadius: "8px",
+  border: "1px solid #CBD5E1",
+  boxSizing: "border-box",
+};
+
 function Checkout() {
   const navigate = useNavigate();
   const [cart, setCart] = useState({});
   const [catalog, setCatalog] = useState({});
   const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [delivery, setDelivery] = useState("pickup");
+  const [residence, setResidence] = useState("");
+  const [roomNumber, setRoomNumber] = useState("");
+  const [paxiPoint, setPaxiPoint] = useState("");
   const [payment, setPayment] = useState("YOCO");
   const [selectedBank, setSelectedBank] = useState(BANKS[0]);
   const [confirmation, setConfirmation] = useState(null);
@@ -90,14 +104,15 @@ function Checkout() {
   };
 
   const items = Object.keys(cart)
-    .filter((id) => cart[id] > 0 && catalog[id])
-    .map((id) => {
-      const p = catalog[id];
-      const qty = cart[id];
+    .filter((key) => cart[key] > 0 && catalog[key.split("::")[0]])
+    .map((key) => {
+      const [productId, size] = key.split("::");
+      const p = catalog[productId];
+      const qty = cart[key];
       return {
-        id,
+        id: key,
         qty,
-        name: p.name,
+        name: size ? `${p.name} (${size})` : p.name,
         sub: p.sub,
         price: p.price,
         origLineTotal: p.price * qty,
@@ -125,8 +140,31 @@ function Checkout() {
   const discountAmount = Math.round(subtotal * DISCOUNT);
   const total = subtotal - discountAmount;
 
+  // Delivery details must be complete before the customer can pay
+  const deliveryValid =
+    delivery === "pickup" ||
+    (delivery === "courier" && residence !== "" && roomNumber.trim() !== "") ||
+    (delivery === "paxi" && paxiPoint.trim() !== "");
+
+  const deliveryHint =
+    delivery === "courier"
+      ? "Select your residence and enter your room number to continue."
+      : delivery === "paxi"
+      ? "Enter your PAXI pickup point to continue."
+      : "";
+
+  const getDeliverySummary = () => {
+    if (delivery === "courier") return `${residence}, room ${roomNumber.trim()}`;
+    if (delivery === "paxi") return `PAXI – ${paxiPoint.trim()}`;
+    return "Campus Pickup – ICT Department Reception";
+  };
+
   const placeOrder = async () => {
     if (placingOrder) return; // guard against double submits
+    if (!deliveryValid) {
+      setOrderError(deliveryHint);
+      return;
+    }
     setPlacingOrder(true);
     setOrderError(null);
 
@@ -156,7 +194,7 @@ function Checkout() {
         throw new Error("One or more invoices failed to save");
       }
 
-      setConfirmation({ total, payment });
+      setConfirmation({ total, payment, deliverySummary: getDeliverySummary() });
       saveCart({});
     } catch (err) {
       console.error("Failed to place order:", err);
@@ -186,6 +224,9 @@ function Checkout() {
             <div className="confirm-title">Order Placed Successfully!</div>
             <div className="confirm-detail">
               Total charged: <strong>{money(confirmation.total)}</strong> via <span>{confirmation.payment}</span>
+            </div>
+            <div className="confirm-detail">
+              Delivery: <strong>{confirmation.deliverySummary}</strong>
             </div>
             <button className="confirm-btn" onClick={() => navigate("/products")}>Continue Shopping</button>
           </div>
@@ -233,7 +274,10 @@ function Checkout() {
             <div className="card">
               <div className="card-head">Delivery / Pickup Option</div>
               <div className="card-body">
-                <div className="del-grid">
+                <div
+                  className="del-grid"
+                  style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
+                >
                   <div className={`del-opt ${delivery === "pickup" ? "active" : ""}`} onClick={() => setDelivery("pickup")}>
                     <div className="del-name">Campus Pickup</div>
                     <div className="del-desc">ICT Department Reception</div>
@@ -244,7 +288,55 @@ function Checkout() {
                     <div className="del-desc">Direct to your residence</div>
                     <div className="del-price">FREE</div>
                   </div>
+                  <div className={`del-opt ${delivery === "paxi" ? "active" : ""}`} onClick={() => setDelivery("paxi")}>
+                    <div className="del-name">PAXI</div>
+                    <div className="del-desc">Collect at a PAXI pickup point</div>
+                    <div className="del-price">FREE</div>
+                  </div>
                 </div>
+
+                {delivery === "courier" && (
+                  <div style={{ marginTop: "14px" }}>
+                    <label style={fieldLabelStyle} htmlFor="residence">Residence</label>
+                    <select
+                      id="residence"
+                      value={residence}
+                      onChange={(e) => setResidence(e.target.value)}
+                      style={fieldStyle}
+                    >
+                      <option value="">Select your residence</option>
+                      {RESIDENCES.map((res) => (
+                        <option key={res} value={res}>{res}</option>
+                      ))}
+                    </select>
+
+                    <label style={{ ...fieldLabelStyle, display: "block", marginTop: "12px" }} htmlFor="room">
+                      Room number
+                    </label>
+                    <input
+                      id="room"
+                      type="text"
+                      value={roomNumber}
+                      onChange={(e) => setRoomNumber(e.target.value)}
+                      placeholder="e.g. 214"
+                      style={fieldStyle}
+                    />
+                  </div>
+                )}
+
+                {delivery === "paxi" && (
+                  <div style={{ marginTop: "14px" }}>
+                    <label style={fieldLabelStyle} htmlFor="paxi">PAXI pickup point</label>
+                    <input
+                      id="paxi"
+                      type="text"
+                      value={paxiPoint}
+                      onChange={(e) => setPaxiPoint(e.target.value)}
+                      placeholder="Store name or address"
+                      style={fieldStyle}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -265,9 +357,7 @@ function Checkout() {
 
                 {payment === "EFT" && (
                   <div style={{ marginTop: "12px" }}>
-                    <label style={{ fontSize: "0.85rem", fontWeight: 600, color: "#334155" }}>
-                      Select Bank
-                    </label>
+                    <label style={fieldLabelStyle}>Select Bank</label>
                     <select
                       value={selectedBank}
                       onChange={(e) => setSelectedBank(e.target.value)}
@@ -311,20 +401,27 @@ function Checkout() {
               <p style={{ color: "red", textAlign: "center" }}>{orderError}</p>
             )}
 
+            {!deliveryValid && (
+              <p style={{ color: "#64748B", textAlign: "center", fontSize: "0.85rem" }}>
+                {deliveryHint}
+              </p>
+            )}
+
             <div style={{ marginTop: "20px" }}>
               {payment === "YOCO" ? (
                 <YocoPayment
-                  amount={total}
-                  studentNumber={getStudentNumber()}
-                  disabled={placingOrder}
-                  buttonClassName="order-btn"
-                  onSuccess={placeOrder}
-                />
+  amount={total}
+  studentNumber={getStudentNumber()}
+  deliverySummary={getDeliverySummary()}
+  disabled={placingOrder || !deliveryValid}
+  buttonClassName="order-btn"
+  onSuccess={placeOrder}
+/>
               ) : (
                 <button
                   className="order-btn"
                   onClick={placeOrder}
-                  disabled={placingOrder}
+                  disabled={placingOrder || !deliveryValid}
                   style={{ width: "100%" }}
                 >
                   {placingOrder ? "Placing Order..." : payLabel}

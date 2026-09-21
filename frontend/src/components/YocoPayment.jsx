@@ -1,8 +1,13 @@
-// YocoPayment.jsx
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-export default function YocoPayment({ amount, studentNumber, onSuccess }) {
+export default function YocoPayment({
+  amount,
+  studentNumber,
+  onSuccess,
+  disabled = false,
+  buttonClassName = "order-btn",
+}) {
   const [popupWindow, setPopupWindow] = useState(null);
   const containerRef = useRef(document.createElement("div"));
 
@@ -48,18 +53,12 @@ export default function YocoPayment({ amount, studentNumber, onSuccess }) {
 
   return (
     <>
+      {/* Uses the same class as the SnapScan/EFT button so they match */}
       <button
+        className={buttonClassName}
         onClick={openPopup}
-        style={{
-          background: "#FF6B00",
-          color: "#FFFFFF",
-          padding: "12px 24px",
-          border: "none",
-          borderRadius: "8px",
-          fontWeight: "bold",
-          width: "100%",
-          cursor: "pointer",
-        }}
+        disabled={disabled}
+        style={{ width: "100%" }}
       >
         Pay R{amount} with Yoco
       </button>

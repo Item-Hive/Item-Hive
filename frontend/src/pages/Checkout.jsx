@@ -4,8 +4,21 @@ import "../styles/Checkout.css";
 import YocoPayment from "../components/YocoPayment"; // 222567023 - Ricardo Mukwevho
 
 const CART_KEY = "ict_branded_cart";
+const USER_KEY = "ict_branded_user";
 const DISCOUNT = 0.2;
 const API_URL = import.meta.env.VITE_API_URL;
+const BANKS = ["FNB", "Standard Bank", "ABSA", "Nedbank", "Capitec"];
+const PAYMENT_METHODS = ["YOCO", "SnapScan", "EFT"];
+
+const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));
+
+const getStudentNumber = () => {
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.studentNumber;
+  } catch {
+    return undefined;
+  }
+};
 
 function Checkout() {
   const navigate = useNavigate();
@@ -14,6 +27,7 @@ function Checkout() {
   const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [delivery, setDelivery] = useState("pickup");
   const [payment, setPayment] = useState("YOCO");
+  const [selectedBank, setSelectedBank] = useState(BANKS[0]);
   const [confirmation, setConfirmation] = useState(null);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [orderError, setOrderError] = useState(null);
@@ -55,6 +69,7 @@ function Checkout() {
     fetchCatalog();
   }, []);
 
+  // Keep cart in sync across tabs
   useEffect(() => {
     const handleStorage = (e) => {
       if (e.key === CART_KEY && !confirmation) {
@@ -73,8 +88,6 @@ function Checkout() {
     setCart(newCart);
     localStorage.setItem(CART_KEY, JSON.stringify(newCart));
   };
-
-  const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));
 
   const items = Object.keys(cart)
     .filter((id) => cart[id] > 0 && catalog[id])
@@ -113,35 +126,33 @@ function Checkout() {
   const total = subtotal - discountAmount;
 
   const placeOrder = async () => {
+    if (placingOrder) return; // guard against double submits
     setPlacingOrder(true);
     setOrderError(null);
 
     try {
       // One invoice per cart line item, matching the current backend schema
-      const invoicePromises = items.map((item) => {
-        const invoicePayload = {
-          id: crypto.randomUUID(),
-          receipt: {
-            itemName: item.name,
-            price: item.price,
-            quantity: item.qty,
-            subtotal: item.origLineTotal,
-            serviceFee: 0,
-            total: item.lineTotal,
-          },
-        };
+      const results = await Promise.all(
+        items.map((item) =>
+          fetch(`${API_URL}/api/invoice`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: crypto.randomUUID(),
+              receipt: {
+                itemName: item.name,
+                price: item.price,
+                quantity: item.qty,
+                subtotal: item.origLineTotal,
+                serviceFee: 0,
+                total: item.lineTotal,
+              },
+            }),
+          })
+        )
+      );
 
-        return fetch(`${API_URL}/api/invoice`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(invoicePayload),
-        });
-      });
-
-      const results = await Promise.all(invoicePromises);
-      const failed = results.some((res) => !res.ok);
-
-      if (failed) {
+      if (results.some((res) => !res.ok)) {
         throw new Error("One or more invoices failed to save");
       }
 
@@ -154,6 +165,11 @@ function Checkout() {
       setPlacingOrder(false);
     }
   };
+
+  const payLabel =
+    payment === "EFT"
+      ? `Pay ${money(total)} via EFT – ${selectedBank}`
+      : `Pay ${money(total)} with ${payment}`;
 
   return (
     <div className="checkout-container">
@@ -236,10 +252,40 @@ function Checkout() {
               <div className="card-head">Payment Method</div>
               <div className="card-body">
                 <div className="pay-row">
-                  {["YOCO", "SnapScan", "EFT"].map((method) => (
-                    <button key={method} className={`pay-opt ${payment === method ? "active" : ""}`} onClick={() => setPayment(method)}>{method}</button>
+                  {PAYMENT_METHODS.map((method) => (
+                    <button
+                      key={method}
+                      className={`pay-opt ${payment === method ? "active" : ""}`}
+                      onClick={() => setPayment(method)}
+                    >
+                      {method}
+                    </button>
                   ))}
                 </div>
+
+                {payment === "EFT" && (
+                  <div style={{ marginTop: "12px" }}>
+                    <label style={{ fontSize: "0.85rem", fontWeight: 600, color: "#334155" }}>
+                      Select Bank
+                    </label>
+                    <select
+                      value={selectedBank}
+                      onChange={(e) => setSelectedBank(e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: "10px",
+                        marginTop: "6px",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      {BANKS.map((bank) => (
+                        <option key={bank} value={bank}>
+                          {bank}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -253,7 +299,10 @@ function Checkout() {
                   </div>
                 ))}
                 <div className="total-row"><span>Subtotal</span><span>{money(subtotal)}</span></div>
-                <div className="total-row discount"><span>Student Discount <span className="disc-badge">-20%</span></span><span>-{money(discountAmount)}</span></div>
+                <div className="total-row discount">
+                  <span>Student Discount <span className="disc-badge">-20%</span></span>
+                  <span>-{money(discountAmount)}</span>
+                </div>
                 <div className="total-row final"><span>Total</span><span>{money(total)}</span></div>
               </div>
             </div>
@@ -262,12 +311,25 @@ function Checkout() {
               <p style={{ color: "red", textAlign: "center" }}>{orderError}</p>
             )}
 
-            <button className="order-btn" onClick={placeOrder} disabled={placingOrder}>
-              {placingOrder ? "Placing Order..." : `Place Order — ${money(total)}`}
-            </button>
-
-            <div style={{ marginTop: '20px' }}>
-              <YocoPayment amount={total} />
+            <div style={{ marginTop: "20px" }}>
+              {payment === "YOCO" ? (
+                <YocoPayment
+                  amount={total}
+                  studentNumber={getStudentNumber()}
+                  disabled={placingOrder}
+                  buttonClassName="order-btn"
+                  onSuccess={placeOrder}
+                />
+              ) : (
+                <button
+                  className="order-btn"
+                  onClick={placeOrder}
+                  disabled={placingOrder}
+                  style={{ width: "100%" }}
+                >
+                  {placingOrder ? "Placing Order..." : payLabel}
+                </button>
+              )}
             </div>
           </>
         )}

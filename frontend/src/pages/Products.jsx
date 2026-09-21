@@ -9,7 +9,6 @@ import navyTee from "../assets/back-navy-tshirt.JPG";
 const CART_KEY = "ict_branded_cart";
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Fallback images cycle through since the backend has no image field yet
 const FALLBACK_IMAGES = [whiteTee, orangeTee, navyTee];
 
 export default function Products() {
@@ -31,7 +30,15 @@ export default function Products() {
     }
   });
 
-  // Fetch real items from the backend
+  const loggedInUser = (() => {
+    try {
+      const raw = localStorage.getItem("ict_branded_user");
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  })();
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -49,7 +56,7 @@ export default function Products() {
           origPrice: null,
           sizes: null,
           rating: item.rating,
-          image: FALLBACK_IMAGES[index % FALLBACK_IMAGES.length],
+          image: item.imageUrl || FALLBACK_IMAGES[index % FALLBACK_IMAGES.length],
         }));
 
         setItems(mapped);
@@ -85,7 +92,6 @@ export default function Products() {
 
   const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
-  // Adds to local cart AND persists a cart entry to the backend
   const addToCart = async (product, e) => {
     if (e && e.stopPropagation) e.stopPropagation();
 
@@ -161,7 +167,11 @@ export default function Products() {
           Item<span>Hive</span>
         </div>
         <div className="nav-right">
-          <span className="nav-student">Student #230036937</span>
+          <span className="nav-student">
+            {loggedInUser
+              ? `Student #${loggedInUser.studentNumber || loggedInUser.idNumber}`
+              : "Guest"}
+          </span>
           <button className="nav-cart" onClick={() => goToCheckout()}>
             🛒 Cart (<span id="cart-count">{cartCount}</span>)
           </button>

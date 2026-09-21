@@ -25,19 +25,23 @@ public class UserService implements IUserService {
 
     @Override
     public User create(UserDTO request) {
-        User user;
         String hashedPassword = passwordEncoder.encode(request.password);
         switch (request.role.toLowerCase()) {
             case "student":
-                user = BrandedFactory.createStudent(request.studentNumber, "", hashedPassword);
-                break;
+                if (studentRepository.findByStudentNumber(request.studentNumber) != null) {
+                    throw new IllegalStateException("A student with this student number already exists");
+                }
+                User student = BrandedFactory.createStudent(request.studentNumber, "", hashedPassword);
+                return userRepository.save(student);
             case "admin":
-                user = BrandedFactory.createAdmin(request.idNumber, "", hashedPassword);
-                break;
+                if (adminRepository.findByIdNumber(request.idNumber) != null) {
+                    throw new IllegalStateException("An admin with this ID number already exists");
+                }
+                User admin = BrandedFactory.createAdmin(request.idNumber, "", hashedPassword);
+                return userRepository.save(admin);
             default:
                 throw new IllegalArgumentException("Invalid role");
         }
-        return userRepository.save(user);
     }
 
     @Override

@@ -62,24 +62,27 @@ public static Invoice createInvoice(String id,CartDetails cartDetails){
                 .setCartDetails(cartDetails)
                 .build();
 }
-public static Student createStudent(String studentNumber, String email, String password) {
+public static Student createStudent(String studentNumber, String email, String password, String firstName, String lastName) {
     return new Student.Builder()
             .setId(generateId("ID-"))
             .setEmail(email)
             .setPassword(password)
             .setStudentNumber(studentNumber)
+            .setFirstName(firstName)
+            .setLastName(lastName)
             .build();
 }
 
-public static Admin createAdmin(String idNumber, String email, String password) {
+public static Admin createAdmin(String idNumber, String email, String password, String firstName, String lastName) {
     return new Admin.Builder()
             .setId(generateId("ID-"))
             .setEmail(email)
             .setPassword(password)
             .setIdNumber(idNumber)
+            .setFirstName(firstName)
+            .setLastName(lastName)
             .build();
-
-    }
+}
     public static String generateId(String idPrefix) {
         return idPrefix + UUID.randomUUID();
     }

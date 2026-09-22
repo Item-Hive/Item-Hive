@@ -8,21 +8,44 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("student");
   const [identifier, setIdentifier] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
+  const resetSignUpOnlyFields = () => {
+    setFirstName("");
+    setLastName("");
+    setConfirmPassword("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    if (isSignUp) {
+      if (!firstName.trim() || !lastName.trim()) {
+        setError("Please enter your first and last name.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match.");
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
       if (isSignUp) {
         const body = {
           role,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           password,
           ...(role === "student" ? { studentNumber: identifier } : { idNumber: identifier }),
         };
@@ -34,6 +57,7 @@ function Login() {
         if (!res.ok) throw new Error("Registration failed. That number may already be in use.");
         setIsSignUp(false);
         setError(null);
+        resetSignUpOnlyFields();
       } else {
         const endpoint = role === "student" ? "login/student" : "login/admin";
         const res = await fetch(`${API_URL}/api/auth/${endpoint}`, {
@@ -70,10 +94,25 @@ function Login() {
         <p style={subtitleStyle}>Sign in to access your store dashboard</p>
 
         <div style={toggleContainerStyle}>
-          <button type="button" style={getToggleStyle(!isSignUp)} onClick={() => setIsSignUp(false)}>
+          <button
+            type="button"
+            style={getToggleStyle(!isSignUp)}
+            onClick={() => {
+              setIsSignUp(false);
+              setError(null);
+              resetSignUpOnlyFields();
+            }}
+          >
             Sign In
           </button>
-          <button type="button" style={getToggleStyle(isSignUp)} onClick={() => setIsSignUp(true)}>
+          <button
+            type="button"
+            style={getToggleStyle(isSignUp)}
+            onClick={() => {
+              setIsSignUp(true);
+              setError(null);
+            }}
+          >
             Sign Up
           </button>
         </div>
@@ -88,6 +127,34 @@ function Login() {
         </div>
 
         <form style={formStyle} onSubmit={handleSubmit}>
+          {isSignUp && (
+            <>
+              <div style={inputGroupStyle}>
+                <label style={labelStyle}>First Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Olwethu"
+                  style={inputStyle}
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div style={inputGroupStyle}>
+                <label style={labelStyle}>Last Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Mtwazi"
+                  style={inputStyle}
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
+              </div>
+            </>
+          )}
+
           <div style={inputGroupStyle}>
             <label style={labelStyle}>{role === "student" ? "Student Number" : "Staff ID Number"}</label>
             <input
@@ -111,6 +178,20 @@ function Login() {
               required
             />
           </div>
+
+          {isSignUp && (
+            <div style={inputGroupStyle}>
+              <label style={labelStyle}>Confirm Password</label>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Re-enter your password"
+                style={inputStyle}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+          )}
 
           <label style={checkboxRowStyle}>
             <input

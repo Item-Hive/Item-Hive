@@ -25,27 +25,37 @@ public class Student extends User{
         private String studentNumber;
 
         @Override
-        public Builder setId(String id){
-            super.setId(id);
-            return this;
-        }
-        @Override
-        public Builder setEmail(String email){
-            super.setEmail(email);
-            return this;
-        }
-        @Override
-        public Builder setPassword(String password){
-            super.setPassword(password);
-            return this;
-        }
-
-        public Builder setStudentNumber(String studentNumber){
-            this.studentNumber= studentNumber;
-            return this;
-        }
-        public Student build(){
-            return new Student(this);
-        }
+    public Builder setId(String id){
+        super.setId(id);
+        return this;
     }
+    @Override
+    public Builder setEmail(String email){
+        super.setEmail(email);
+        return this;
+    }
+    @Override
+    public Builder setPassword(String password){
+        super.setPassword(password);
+        return this;
+    }
+    @Override
+    public Builder setFirstName(String firstName){
+        super.setFirstName(firstName);
+        return this;
+    }
+    @Override
+    public Builder setLastName(String lastName){
+        super.setLastName(lastName);
+        return this;
+    }
+
+    public Builder setStudentNumber(String studentNumber){
+        this.studentNumber= studentNumber;
+        return this;
+    }
+    public Student build(){
+        return new Student(this);
+    }
+}
 }

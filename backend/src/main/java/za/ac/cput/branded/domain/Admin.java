@@ -26,28 +26,39 @@ public class Admin extends User{
     public static class Builder extends User.Builder{
         private String idNumber;
 
-        @Override
-        public Builder setId(String id){
-            super.setId(id);
-            return this;
-        }
-        @Override
-        public Builder setEmail(String email){
-            super.setEmail(email);
-            return this;
-        }
-        @Override
-        public Builder setPassword(String password){
-            super.setPassword(password);
-            return this;
-        }
+       @Override
+    public Builder setId(String id){
+        super.setId(id);
+        return this;
+    }
+    @Override
+    public Builder setEmail(String email){
+        super.setEmail(email);
+        return this;
+    }
+    @Override
+    public Builder setPassword(String password){
+        super.setPassword(password);
+        return this;
+    }
+    @Override
+    public Builder setFirstName(String firstName){
+        super.setFirstName(firstName);
+        return this;
+    }
+    @Override
+    public Builder setLastName(String lastName){
+        super.setLastName(lastName);
+        return this;
+    }
 
-        public Builder setIdNumber(String  idNumber){
-            this.idNumber = idNumber;
-            return this;
-        }
-        public Admin build(){
-            return new Admin(this);
-        }
+    public Builder setIdNumber(String  idNumber){
+        this.idNumber = idNumber;
+        return this;
+    }
+    public Admin build(){
+        return new Admin(this);
     }
 }
+}
+

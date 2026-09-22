@@ -22,44 +22,65 @@ public class UserService implements IUserService {
         this.studentRepository = studentRepository;
         this.adminRepository = adminRepository;
     }
-
+@Override
+public User create(UserDTO request) {
+    String hashedPassword = passwordEncoder.encode(request.password);
+    switch (request.role.toLowerCase()) {
+        case "student":
+            if (studentRepository.findByStudentNumber(request.studentNumber) != null) {
+                throw new IllegalStateException("A student with this student number already exists");
+            }
+            User student = BrandedFactory.createStudent(
+                request.studentNumber,
+                request.email,
+                hashedPassword,
+                request.firstName,
+                request.lastName
+            );
+            return userRepository.save(student);
+        case "admin":
+            if (adminRepository.findByIdNumber(request.idNumber) != null) {
+                throw new IllegalStateException("An admin with this ID number already exists");
+            }
+            User admin = BrandedFactory.createAdmin(
+                request.idNumber,
+                request.email,
+                hashedPassword,
+                request.firstName,
+                request.lastName
+            );
+            return userRepository.save(admin);
+        default:
+            throw new IllegalArgumentException("Invalid role");
+    }
+}
+    
     @Override
-    public User create(UserDTO request) {
-        String hashedPassword = passwordEncoder.encode(request.password);
-        switch (request.role.toLowerCase()) {
-            case "student":
-                if (studentRepository.findByStudentNumber(request.studentNumber) != null) {
-                    throw new IllegalStateException("A student with this student number already exists");
-                }
-                User student = BrandedFactory.createStudent(request.studentNumber, "", hashedPassword);
-                return userRepository.save(student);
-            case "admin":
-                if (adminRepository.findByIdNumber(request.idNumber) != null) {
-                    throw new IllegalStateException("An admin with this ID number already exists");
-                }
-                User admin = BrandedFactory.createAdmin(request.idNumber, "", hashedPassword);
-                return userRepository.save(admin);
-            default:
-                throw new IllegalArgumentException("Invalid role");
-        }
+public User update(UserDTO request) {
+    User user = userRepository.findById(request.id)
+            .orElseThrow(() -> new IllegalStateException("User not found"));
+
+    if (request.email != null) {
+        user.setEmail(request.email);
+    }
+    if (request.firstName != null) {
+        user.setFirstName(request.firstName);
+    }
+    if (request.lastName != null) {
+        user.setLastName(request.lastName);
+    }
+    if (request.password != null && !request.password.isBlank()) {
+        user.setPassword(passwordEncoder.encode(request.password));
     }
 
-    @Override
-    public User update(UserDTO request) {
-        User user;
-        String hashedPassword = passwordEncoder.encode(request.password);
-        switch (request.role.toLowerCase()) {
-            case "student":
-                user = BrandedFactory.createStudent(request.studentNumber, "", hashedPassword);
-                break;
-            case "admin":
-                user = BrandedFactory.createAdmin(request.idNumber, "", hashedPassword);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid role");
-        }
-        return userRepository.save(user);
+    if (user instanceof Student && request.studentNumber != null) {
+        ((Student) user).setStudentNumber(request.studentNumber);
+    } else if (user instanceof Admin && request.idNumber != null) {
+        ((Admin) user).setIdNumber(request.idNumber);
     }
+
+    return userRepository.save(user);
+}
 
     @Override
     public User read(String id) {

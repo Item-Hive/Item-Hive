@@ -36,7 +36,7 @@ function Checkout() {
   const [cart, setCart] = useState({});
   const [catalog, setCatalog] = useState({});
   const [loadingCatalog, setLoadingCatalog] = useState(true);
-  const [delivery, setDelivery] = useState("pickup");
+  const [delivery, setDelivery] = useState("courier");
   const [residence, setResidence] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
   const [paxiPoint, setPaxiPoint] = useState("");
@@ -142,21 +142,17 @@ function Checkout() {
 
   // Delivery details must be complete before the customer can pay
   const deliveryValid =
-    delivery === "pickup" ||
     (delivery === "courier" && residence !== "" && roomNumber.trim() !== "") ||
     (delivery === "paxi" && paxiPoint.trim() !== "");
 
   const deliveryHint =
     delivery === "courier"
       ? "Select your residence and enter your room number to continue."
-      : delivery === "paxi"
-      ? "Enter your PAXI pickup point to continue."
-      : "";
+      : "Enter your PAXI pickup point to continue.";
 
   const getDeliverySummary = () => {
     if (delivery === "courier") return `${residence}, room ${roomNumber.trim()}`;
-    if (delivery === "paxi") return `PAXI – ${paxiPoint.trim()}`;
-    return "Campus Pickup – ICT Department Reception";
+    return `PAXI – ${paxiPoint.trim()}`;
   };
 
   const placeOrder = async () => {
@@ -278,11 +274,6 @@ function Checkout() {
                   className="del-grid"
                   style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
                 >
-                  <div className={`del-opt ${delivery === "pickup" ? "active" : ""}`} onClick={() => setDelivery("pickup")}>
-                    <div className="del-name">Campus Pickup</div>
-                    <div className="del-desc">ICT Department Reception</div>
-                    <div className="del-price">FREE</div>
-                  </div>
                   <div className={`del-opt ${delivery === "courier" ? "active" : ""}`} onClick={() => setDelivery("courier")}>
                     <div className="del-name">Standard Delivery</div>
                     <div className="del-desc">Direct to your residence</div>
@@ -410,13 +401,13 @@ function Checkout() {
             <div style={{ marginTop: "20px" }}>
               {payment === "YOCO" ? (
                 <YocoPayment
-  amount={total}
-  studentNumber={getStudentNumber()}
-  deliverySummary={getDeliverySummary()}
-  disabled={placingOrder || !deliveryValid}
-  buttonClassName="order-btn"
-  onSuccess={placeOrder}
-/>
+                  amount={total}
+                  studentNumber={getStudentNumber()}
+                  deliverySummary={getDeliverySummary()}
+                  disabled={placingOrder || !deliveryValid}
+                  buttonClassName="order-btn"
+                  onSuccess={placeOrder}
+                />
               ) : (
                 <button
                   className="order-btn"

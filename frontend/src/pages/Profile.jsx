@@ -2,11 +2,34 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Profile.css";
 
+const USER_KEY = "ict_branded_user";
+
+const getLoggedInUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY) || "null");
+  } catch {
+    return null;
+  }
+};
+
+// Admin if the ID starts with ADM, otherwise treated as a student
+const isAdminUser = (user) => {
+  const id = String(user?.idNumber || "").toUpperCase();
+  return id.startsWith("ADM");
+};
+
 export default function Profile() {
   const navigate = useNavigate();
+  const user = getLoggedInUser();
+
+  const admin = isAdminUser(user);
+  const idValue = user?.idNumber || "—";
+  const idLabel = admin ? "Admin" : "Student";
+  const displayName = admin ? "Admin Account" : "Student Account";
+  const email = user?.email && user.email.trim() !== "" ? user.email : "Not set";
 
   const handleSignOut = () => {
-    // Navigate to Login/Home page
+    localStorage.removeItem(USER_KEY);
     navigate("/");
   };
 
@@ -24,9 +47,11 @@ export default function Profile() {
         </div>
 
         <div className="hero-user-info">
-          <div className="avatar-badge">OM</div>
-          <h2 className="user-name">Olwethu Mtwazi</h2>
-          <p className="user-subtext">Student #230036937 • ICT Department</p>
+          <div className="avatar-badge">{idLabel[0]}</div>
+          <h2 className="user-name">{displayName}</h2>
+          <p className="user-subtext">
+            {idLabel} #{idValue}
+          </p>
         </div>
       </div>
 
@@ -61,7 +86,7 @@ export default function Profile() {
             <div className="settings-item">
               <div className="settings-info">
                 <span className="settings-label">Email Address</span>
-                <span className="settings-val">230036937@mycput.ac.za</span>
+                <span className="settings-val">{email}</span>
               </div>
               <button className="settings-action-btn">Edit</button>
             </div>
@@ -69,7 +94,7 @@ export default function Profile() {
             <div className="settings-item">
               <div className="settings-info">
                 <span className="settings-label">Size Preference</span>
-                <span className="settings-val">Medium (M)</span>
+                <span className="settings-val">{user?.sizePreference || "Not set"}</span>
               </div>
               <button className="settings-action-btn">Edit</button>
             </div>

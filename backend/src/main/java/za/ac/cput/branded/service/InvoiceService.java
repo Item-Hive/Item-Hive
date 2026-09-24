@@ -30,11 +30,14 @@ public class InvoiceService implements IInvoiceService {
         if (invoices == null) return null;
         return invoiceRepository.save(invoices);
     }
-
     @Override
-    public List<Invoice> getByUserId(String userId) {
-    return invoiceRepository.findByReceipt_UserId(userId);
+    public List<Invoice> getAll() {
+        return invoiceRepository.findAll();
     }
+
+    public List<Invoice> getByUserId(String userId) {
+         return invoiceRepository.findByReceipt_UserId(userId);
+            }
 
     @Override
     public void delete(String id) {

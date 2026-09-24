@@ -32,8 +32,8 @@ public class InvoiceService implements IInvoiceService {
     }
 
     @Override
-    public List<Invoice> getAll() {
-        return invoiceRepository.findAll();
+    public List<Invoice> getByUserId(String userId) {
+    return invoiceRepository.findByReceipt_UserId(userId);
     }
 
     @Override

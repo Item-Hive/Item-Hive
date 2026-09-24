@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Profile.css";
 
 const USER_KEY = "ict_branded_user";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const getLoggedInUser = () => {
   try {
@@ -12,21 +13,52 @@ const getLoggedInUser = () => {
   }
 };
 
-// Admin if the ID starts with ADM, otherwise treated as a student
 const isAdminUser = (user) => {
   const id = String(user?.idNumber || "").toUpperCase();
   return id.startsWith("ADM");
 };
 
+const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));
+
 export default function Profile() {
   const navigate = useNavigate();
   const user = getLoggedInUser();
 
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+
   const admin = isAdminUser(user);
   const idValue = user?.idNumber || "—";
   const idLabel = admin ? "Admin" : "Student";
-  const displayName = admin ? "Admin Account" : "Student Account";
+  const displayName =
+    user?.firstName && user?.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : admin ? "Admin Account" : "Student Account";
+  const initials =
+    user?.firstName && user?.lastName
+      ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+      : idLabel[0];
   const email = user?.email && user.email.trim() !== "" ? user.email : "Not set";
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (!user?.id) {
+        setLoadingOrders(false);
+        return;
+      }
+      try {
+        const res = await fetch(`${API_URL}/api/invoice/user/${user.id}`);
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+        const data = await res.json();
+        setOrders(data);
+      } catch (err) {
+        console.error("Failed to fetch orders:", err);
+      } finally {
+        setLoadingOrders(false);
+      }
+    };
+    fetchOrders();
+  }, [user?.id]);
 
   const handleSignOut = () => {
     localStorage.removeItem(USER_KEY);
@@ -37,7 +69,6 @@ export default function Profile() {
     <div className="profile-page">
       <div className="profile-top-label">Account Dashboard</div>
 
-      {/* Hero Banner Header */}
       <div className="profile-hero-banner">
         <div className="hero-top-bar">
           <span className="hero-brand">
@@ -47,7 +78,7 @@ export default function Profile() {
         </div>
 
         <div className="hero-user-info">
-          <div className="avatar-badge">{idLabel[0]}</div>
+          <div className="avatar-badge">{initials}</div>
           <h2 className="user-name">{displayName}</h2>
           <p className="user-subtext">
             {idLabel} #{idValue}
@@ -55,31 +86,34 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Cards Container */}
       <div className="profile-content-container">
-        {/* My Orders Section */}
         <div className="profile-section-card">
           <div className="card-header-bar">My Recent Orders</div>
           <div className="card-body">
-            <div className="order-row">
-              <div className="order-details">
-                <span className="order-id">Order #0001</span>
-                <span className="order-item-desc">ICT Classic - Custom Print</span>
-              </div>
-              <span className="order-price">R200</span>
-            </div>
-
-            <div className="order-row">
-              <div className="order-details">
-                <span className="order-id">Order #0002</span>
-                <span className="order-item-desc">ICT Crop Top</span>
-              </div>
-              <span className="order-price">R130</span>
-            </div>
+            {loadingOrders && <p style={{ color: "#64748B" }}>Loading orders...</p>}
+            {!loadingOrders && orders.length === 0 && (
+              <p style={{ color: "#64748B" }}>No orders yet.</p>
+            )}
+            {!loadingOrders &&
+              orders.map((order) => (
+                <div className="order-row" key={order.id}>
+                  <div className="order-details">
+                    <span className="order-id">{order.receipt?.itemName}</span>
+                    <span className="order-item-desc">
+                      {order.receipt?.deliveryType === "paxi"
+                        ? "PAXI"
+                        : "Standard Delivery"}
+                      {order.receipt?.deliverySummary
+                        ? ` – ${order.receipt.deliverySummary}`
+                        : ""}
+                    </span>
+                  </div>
+                  <span className="order-price">{money(order.receipt?.total || 0)}</span>
+                </div>
+              ))}
           </div>
         </div>
 
-        {/* Account Settings Section */}
         <div className="profile-section-card">
           <div className="card-header-bar">Account Settings</div>
           <div className="card-body settings-list">
@@ -109,7 +143,6 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Sign Out Button */}
         <div className="signout-wrapper">
           <button className="signout-btn" onClick={handleSignOut}>
             Sign Out

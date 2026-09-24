@@ -10,8 +10,11 @@ public class CartDetails {
     private double price;
     private int quantity;
     private double subtotal;
-    private double  serviceFee;
+    private double serviceFee;
     private double total;
+    private String userId;
+    private String deliveryType;
+    private String deliverySummary;
 
     protected CartDetails(){}
 
@@ -22,6 +25,9 @@ public class CartDetails {
         this.subtotal = builder.subtotal;
         this.serviceFee = builder.serviceFee;
         this.total = builder.total;
+        this.userId = builder.userId;
+        this.deliveryType = builder.deliveryType;
+        this.deliverySummary = builder.deliverySummary;
     }
 
     // Lets Jackson deserialize incoming JSON (e.g. @RequestBody) directly,
@@ -33,7 +39,10 @@ public class CartDetails {
             @JsonProperty("quantity") int quantity,
             @JsonProperty("subtotal") double subtotal,
             @JsonProperty("serviceFee") double serviceFee,
-            @JsonProperty("total") double total
+            @JsonProperty("total") double total,
+            @JsonProperty("userId") String userId,
+            @JsonProperty("deliveryType") String deliveryType,
+            @JsonProperty("deliverySummary") String deliverySummary
     ) {
         this.itemName = itemName;
         this.price = price;
@@ -41,6 +50,9 @@ public class CartDetails {
         this.subtotal = subtotal;
         this.serviceFee = serviceFee;
         this.total = total;
+        this.userId = userId;
+        this.deliveryType = deliveryType;
+        this.deliverySummary = deliverySummary;
     }
 
     public String getItemName() {
@@ -66,6 +78,10 @@ public class CartDetails {
     public double getTotal() {
         return total;
     }
+    public String getUserId() { return userId; }
+    public String getDeliveryType() { return deliveryType; }
+    public String getDeliverySummary() { return deliverySummary; }
+
     public static class Builder{
         private String id;
         private String itemName;
@@ -74,6 +90,10 @@ public class CartDetails {
         private double subtotal;
         private double  serviceFee;
         private double total;
+        private String userId;
+        private String deliveryType;
+        private String deliverySummary;
+
 
         public Builder setId(String id){
             this.id = id;
@@ -103,6 +123,11 @@ public class CartDetails {
             this.total = total;
             return this;
         }
+
+        public Builder setUserId(String userId){ this.userId = userId; return this; }
+        public Builder setDeliveryType(String deliveryType){ this.deliveryType = deliveryType; return this; }
+        public Builder setDeliverySummary(String deliverySummary){ this.deliverySummary = deliverySummary; return this; }
+
         public CartDetails build(){
             if(id == null || id.isEmpty())return null;
             if(itemName == null || itemName.isEmpty())return null;

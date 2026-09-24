@@ -1,6 +1,35 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
+function generateLuhnCard(prefix = "4", length = 16) {
+  let digits = prefix;
+  while (digits.length < length - 1) digits += Math.floor(Math.random() * 10);
+  let sum = 0;
+  for (let i = 0; i < digits.length; i++) {
+    let d = +digits[digits.length - 1 - i];
+    if (i % 2 === 0) { d *= 2; if (d > 9) d -= 9; }
+    sum += d;
+  }
+  const check = (10 - (sum % 10)) % 10;
+  return digits + check;
+}
+
+function isValidLuhn(cardNumber) {
+  const digits = cardNumber.replace(/\D/g, "");
+  if (digits.length < 13) return false;
+  let sum = 0;
+  for (let i = 0; i < digits.length; i++) {
+    let d = +digits[digits.length - 1 - i];
+    if (i % 2 === 1) { d *= 2; if (d > 9) d -= 9; }
+    sum += d;
+  }
+  return sum % 10 === 0;
+}
+
+function formatCardNumber(value) {
+  return value.replace(/\D/g, "").slice(0, 16).replace(/(\d{4})(?=\d)/g, "$1 ");
+}
+
 export default function YocoPayment({
   amount,
   studentNumber,
@@ -17,7 +46,7 @@ export default function YocoPayment({
     const popup = window.open(
       "",
       "YocoPayment",
-      "width=420,height=560,left=200,top=200"
+      "width=420,height=600,left=200,top=200"
     );
 
     if (!popup) {
@@ -29,7 +58,6 @@ export default function YocoPayment({
     popup.document.body.style.margin = "0";
     popup.document.body.appendChild(containerRef.current);
 
-    // Basic styling inside the popup document
     const style = popup.document.createElement("style");
     style.textContent = `
       body { font-family: -apple-system, "Segoe UI", sans-serif; background: #F8FAFC; }
@@ -38,7 +66,6 @@ export default function YocoPayment({
 
     setPopupWindow(popup);
 
-    // Close cleanly if the user closes the popup manually
     const checkClosed = setInterval(() => {
       if (popup.closed) {
         setPopupWindow(null);
@@ -47,20 +74,16 @@ export default function YocoPayment({
     }, 500);
   };
 
-  // Close the popup if this component goes away
   useEffect(() => {
     return () => {
       if (popupWindow && !popupWindow.closed) popupWindow.close();
     };
   }, [popupWindow]);
 
-  // Clear the pending "place order" timer if the component goes away
   useEffect(() => {
     return () => clearTimeout(successTimer.current);
   }, []);
 
-  // Payment went through: let the popup show the confirmation card for a moment,
-  // then place the order (which closes the popup and shows the page confirmation)
   const handlePaid = () => {
     successTimer.current = setTimeout(() => {
       if (onSuccess) onSuccess();
@@ -69,7 +92,6 @@ export default function YocoPayment({
 
   return (
     <>
-      {/* Uses the same class as the SnapScan/EFT button so they match */}
       <button
         className={buttonClassName}
         onClick={openPopup}
@@ -97,8 +119,33 @@ export default function YocoPayment({
 function PaymentForm({ amount, studentNumber, deliverySummary, onPaid, onClose }) {
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [cardError, setCardError] = useState("");
+
+  const fillTestCard = () => {
+    setCardNumber(formatCardNumber(generateLuhnCard()));
+    setExpiry("12/29");
+    setCvv("123");
+    setCardError("");
+  };
 
   const handlePay = () => {
+    if (!isValidLuhn(cardNumber)) {
+      setCardError("Enter a valid card number (or tap 'Use test card').");
+      return;
+    }
+    if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+      setCardError("Expiry must be in MM/YY format.");
+      return;
+    }
+    if (!/^\d{3,4}$/.test(cvv)) {
+      setCardError("CVV must be 3–4 digits.");
+      return;
+    }
+
+    setCardError("");
     setProcessing(true);
     setTimeout(() => {
       setProcessing(false);
@@ -153,11 +200,77 @@ function PaymentForm({ amount, studentNumber, deliverySummary, onPaid, onClose }
     );
   }
 
+  const fieldStyle = {
+    width: "100%",
+    padding: "10px",
+    marginTop: "4px",
+    borderRadius: "8px",
+    border: "1px solid #CBD5E1",
+    boxSizing: "border-box",
+    fontSize: "0.95rem",
+  };
+
   return (
     <div style={{ background: "#FFFFFF", border: "2px solid #FF6B00", padding: "20px", borderRadius: "12px", margin: "16px" }}>
-      <h3 style={{ color: "#FF6B00" }}>Yoco Secure Payment</h3>
-      <p style={{ color: "#000" }}>Amount to pay: <strong>R{amount}</strong></p>
-      <p style={{ fontSize: "12px", color: "#666" }}>Test card: 4242 4242 4242 4242</p>
+      <h3 style={{ color: "#FF6B00", marginBottom: "4px" }}>Yoco Secure Payment</h3>
+      <p style={{ color: "#000", margin: "0 0 12px" }}>
+        Amount to pay: <strong>R{amount}</strong>
+      </p>
+
+      <button
+        type="button"
+        onClick={fillTestCard}
+        style={{
+          background: "#F1F5F9",
+          color: "#0F172A",
+          border: "1px solid #CBD5E1",
+          borderRadius: "8px",
+          padding: "8px 12px",
+          fontSize: "0.85rem",
+          fontWeight: 600,
+          cursor: "pointer",
+          marginBottom: "14px",
+        }}
+      >
+        Use test card
+      </button>
+
+      <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#334155" }}>Card number</label>
+      <input
+        type="text"
+        placeholder="4242 4242 4242 4242"
+        value={cardNumber}
+        onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+        style={fieldStyle}
+      />
+
+      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+        <div style={{ flex: 1 }}>
+          <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#334155" }}>Expiry</label>
+          <input
+            type="text"
+            placeholder="MM/YY"
+            value={expiry}
+            onChange={(e) => setExpiry(e.target.value)}
+            style={fieldStyle}
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#334155" }}>CVV</label>
+          <input
+            type="text"
+            placeholder="123"
+            value={cvv}
+            onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
+            style={fieldStyle}
+          />
+        </div>
+      </div>
+
+      {cardError && (
+        <p style={{ color: "#DC2626", fontSize: "0.8rem", margin: "10px 0 0" }}>{cardError}</p>
+      )}
+
       <button
         onClick={handlePay}
         disabled={processing}
@@ -170,6 +283,7 @@ function PaymentForm({ amount, studentNumber, deliverySummary, onPaid, onClose }
           fontWeight: "bold",
           width: "100%",
           cursor: "pointer",
+          marginTop: "16px",
         }}
       >
         {processing ? "Processing..." : `Pay R${amount} with Yoco`}

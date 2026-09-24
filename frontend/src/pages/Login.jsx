@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import loginPhoto from "../assets/students-typing.jpg";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -87,6 +88,11 @@ function Login() {
             style={logoStyle}
           />
         </div>
+
+        <div
+          className="login-image-panel"
+          style={{ backgroundImage: `url(${loginPhoto})` }}
+          />
 
         <h2 style={titleStyle}>
           Welcome to <span style={{ color: "#F97316" }}>ItemHive</span>

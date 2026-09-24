@@ -21,6 +21,14 @@ const getStudentNumber = () => {
   }
 };
 
+const getLoggedInUserId = () => {
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.id;
+  } catch {
+    return undefined;
+  }
+};
+
 const fieldLabelStyle = { fontSize: "0.85rem", fontWeight: 600, color: "#334155" };
 const fieldStyle = {
   width: "100%",
@@ -172,14 +180,17 @@ function Checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              id: crypto.randomUUID(),
-              receipt: {
-                itemName: item.name,
-                price: item.price,
-                quantity: item.qty,
-                subtotal: item.origLineTotal,
-                serviceFee: 0,
-                total: item.lineTotal,
+  id: crypto.randomUUID(),
+  receipt: {
+    itemName: item.name,
+    price: item.price,
+    quantity: item.qty,
+    subtotal: item.origLineTotal,
+    serviceFee: 0,
+    total: item.lineTotal,
+    userId: getLoggedInUserId(),
+    deliveryType: delivery,
+    deliverySummary: getDeliverySummary(),
               },
             }),
           })

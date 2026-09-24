@@ -26,6 +26,10 @@ public class InvoiceController {
     public Invoice read(@PathVariable String id){
         return invoiceService.read(id);
     }
+    @GetMapping("/user/{userId}")
+    public List<Invoice> getByUser(@PathVariable String userId) {
+        return invoiceService.getByUserId(userId);
+    }
     @GetMapping
     public List<Invoice> getAll(){
         return invoiceService.getAll();

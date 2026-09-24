@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 
 function generateLuhnCard(prefix = "4", length = 16) {
   let digits = prefix;
@@ -38,83 +37,52 @@ export default function YocoPayment({
   disabled = false,
   buttonClassName = "order-btn",
 }) {
-  const [popupWindow, setPopupWindow] = useState(null);
-  const containerRef = useRef(document.createElement("div"));
-  const successTimer = useRef(null);
-
-  const openPopup = () => {
-    const popup = window.open(
-      "",
-      "YocoPayment",
-      "width=420,height=600,left=200,top=200"
-    );
-
-    if (!popup) {
-      alert("Please allow popups for this site to complete payment.");
-      return;
-    }
-
-    popup.document.title = "Yoco Secure Payment";
-    popup.document.body.style.margin = "0";
-    popup.document.body.appendChild(containerRef.current);
-
-    const style = popup.document.createElement("style");
-    style.textContent = `
-      body { font-family: -apple-system, "Segoe UI", sans-serif; background: #F8FAFC; }
-    `;
-    popup.document.head.appendChild(style);
-
-    setPopupWindow(popup);
-
-    const checkClosed = setInterval(() => {
-      if (popup.closed) {
-        setPopupWindow(null);
-        clearInterval(checkClosed);
-      }
-    }, 500);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (popupWindow && !popupWindow.closed) popupWindow.close();
-    };
-  }, [popupWindow]);
-
-  useEffect(() => {
-    return () => clearTimeout(successTimer.current);
-  }, []);
-
-  const handlePaid = () => {
-    successTimer.current = setTimeout(() => {
-      if (onSuccess) onSuccess();
-    }, 2500);
-  };
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <button
         className={buttonClassName}
-        onClick={openPopup}
+        onClick={() => setIsOpen(true)}
         disabled={disabled}
         style={{ width: "100%" }}
       >
         Pay R{amount} with Yoco
       </button>
 
-      {popupWindow &&
-        createPortal(
-          <PaymentForm
-            amount={amount}
-            studentNumber={studentNumber}
-            deliverySummary={deliverySummary}
-            onPaid={handlePaid}
-            onClose={() => popupWindow.close()}
-          />,
-          containerRef.current
-        )}
+      {isOpen && (
+        <div style={overlayStyle}>
+          <div style={modalStyle}>
+            <PaymentForm
+              amount={amount}
+              studentNumber={studentNumber}
+              deliverySummary={deliverySummary}
+              onPaid={() => setTimeout(() => { if (onSuccess) onSuccess(); }, 2500)}
+              onClose={() => setIsOpen(false)}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }
+
+const overlayStyle = {
+  position: "fixed",
+  inset: 0,
+  backgroundColor: "rgba(15, 23, 42, 0.5)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1000,
+};
+
+const modalStyle = {
+  maxWidth: "420px",
+  width: "90%",
+  maxHeight: "90vh",
+  overflowY: "auto",
+};
 
 function PaymentForm({ amount, studentNumber, deliverySummary, onPaid, onClose }) {
   const [processing, setProcessing] = useState(false);
@@ -163,7 +131,6 @@ function PaymentForm({ amount, studentNumber, deliverySummary, onPaid, onClose }
           padding: "32px 20px",
           borderRadius: "20px",
           textAlign: "center",
-          margin: "16px",
         }}
       >
         <div style={{ fontSize: "3rem" }}>🎉</div>
@@ -211,7 +178,7 @@ function PaymentForm({ amount, studentNumber, deliverySummary, onPaid, onClose }
   };
 
   return (
-    <div style={{ background: "#FFFFFF", border: "2px solid #FF6B00", padding: "20px", borderRadius: "12px", margin: "16px" }}>
+    <div style={{ background: "#FFFFFF", border: "2px solid #FF6B00", padding: "20px", borderRadius: "12px" }}>
       <h3 style={{ color: "#FF6B00", marginBottom: "4px" }}>Yoco Secure Payment</h3>
       <p style={{ color: "#000", margin: "0 0 12px" }}>
         Amount to pay: <strong>R{amount}</strong>

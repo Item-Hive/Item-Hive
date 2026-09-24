@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Checkout.css";
-import YocoPayment from "../components/YocoPayment"; // 222567023 - Ricardo Mukwevho
+import YocoPayment from "../components/YocoPayment"; 
 
 const CART_KEY = "ict_branded_cart";
 const USER_KEY = "ict_branded_user";
@@ -9,7 +9,41 @@ const DISCOUNT = 0.2;
 const API_URL = import.meta.env.VITE_API_URL;
 const BANKS = ["FNB", "Standard Bank", "ABSA", "Nedbank", "Capitec"];
 const PAYMENT_METHODS = ["YOCO", "SnapScan", "EFT"];
-const RESIDENCES = ["Catsville", "St Peters", "Cape Suites"];
+const RESIDENCE_GROUPS = [
+  {
+    label: "Bellville Campus",
+    options: [
+      "Bellville Campus Residences", "Anglo American Residence", "De Beers Residence (East Wing)",
+      "De Goede Hoop Residence", "Freedom Square 1 & 2", "Heroes House", "Kruskal", "MGR 1", "MGR 2",
+      "New 200 Beds Residence", "Post Graduate Residence", "Richard Sacco / Sacco Residence",
+      "Sheriff's House Residence", "Toplin House", "Park Central", "Theresa Court", "Toplin 2",
+      "Bellpark", "Reghkam", "South Point – Orchards", "Student Life – Northville", "Melade House",
+      "Student Junction Residences (Goodman, Libertas, Le Ruth, Middestad, Picton)", "Elile House",
+    ],
+  },
+  {
+    label: "District Six (Cape Town) Campus",
+    options: [
+      "Cape Suites", "Catsville (Groote Schuur)", "City Edge Residence", "Downtown Lodge (Zonnebloem)",
+      "Elizabeth Women's Residence (Gardens)", "J&B Residence (Zonnebloem)", "New Market Junction",
+      "Plein Street (South Point)", "President House (South Point)", "Sandenburgh Residence (Zonnebloem)",
+      "St Peters Residence – Block A", "Hanover Street Residence", "Vogue House", "Stanhope – South Point",
+      "Harfield", "Rushkin House", "Mountain House",
+    ],
+  },
+  {
+    label: "Mowbray Campus",
+    options: ["Viljoenhof Residence"],
+  },
+  {
+    label: "Wellington Campus",
+    options: ["House Bliss", "House Meiring", "Murray House", "House Navarre", "New Navarre", "Wouter Malan"],
+  },
+  {
+    label: "Accredited Off-Campus (CPUT-approved)",
+    options: ["Van Riebeck", "St Monica's", "Belle Cape", "Premier House", "Cape Station", "Imizamo", "F&S", "Khasia House", "Usenathi"],
+  },
+];
 
 const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));
 
@@ -180,17 +214,17 @@ function Checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-  id: crypto.randomUUID(),
-  receipt: {
-    itemName: item.name,
-    price: item.price,
-    quantity: item.qty,
-    subtotal: item.origLineTotal,
-    serviceFee: 0,
-    total: item.lineTotal,
-    userId: getLoggedInUserId(),
-    deliveryType: delivery,
-    deliverySummary: getDeliverySummary(),
+              id: crypto.randomUUID(),
+              receipt: {
+                itemName: item.name,
+                price: item.price,
+                quantity: item.qty,
+                subtotal: item.origLineTotal,
+                serviceFee: 0,
+                total: item.lineTotal,
+                userId: getLoggedInUserId(),
+                deliveryType: delivery,
+                deliverySummary: getDeliverySummary(),
               },
             }),
           })
@@ -307,8 +341,12 @@ function Checkout() {
                       style={fieldStyle}
                     >
                       <option value="">Select your residence</option>
-                      {RESIDENCES.map((res) => (
-                        <option key={res} value={res}>{res}</option>
+                      {RESIDENCE_GROUPS.map((group) => (
+                        <optgroup key={group.label} label={group.label}>
+                          {group.options.map((res) => (
+                            <option key={res} value={res}>{res}</option>
+                          ))}
+                        </optgroup>
                       ))}
                     </select>
 
@@ -337,6 +375,14 @@ function Checkout() {
                       placeholder="Store name or address"
                       style={fieldStyle}
                     />
+                    <a>
+                      href="https://www.paxi.co.za/paxi-point-locator"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: "inline-block", marginTop: "8px", fontSize: "0.85rem", color: "#FF6B00", fontWeight: 600 }}
+                    
+                      📍 Find your nearest PAXI point →
+                    </a>
                   </div>
                 )}
               </div>

@@ -77,158 +77,204 @@ function Login() {
       setLoading(false);
     }
   };
-
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        <div style={logoWrapperStyle}>
-          <img
-            src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png"
-            alt="ItemHive Logo"
-            style={logoStyle}
-          />
-        </div>
-
-        <div
-          className="login-image-panel"
-          style={{ backgroundImage: `url(${loginPhoto})` }}
-          />
-
-        <h2 style={titleStyle}>
-          Welcome to <span style={{ color: "#F97316" }}>ItemHive</span>
-        </h2>
-        <p style={subtitleStyle}>Sign in to access your store dashboard</p>
-
-        <div style={toggleContainerStyle}>
-          <button
-            type="button"
-            style={getToggleStyle(!isSignUp)}
-            onClick={() => {
-              setIsSignUp(false);
-              setError(null);
-              resetSignUpOnlyFields();
-            }}
-          >
-            Sign In
-          </button>
-          <button
-            type="button"
-            style={getToggleStyle(isSignUp)}
-            onClick={() => {
-              setIsSignUp(true);
-              setError(null);
-            }}
-          >
-            Sign Up
-          </button>
-        </div>
-
-        <div style={toggleContainerStyle}>
-          <button type="button" style={getToggleStyle(role === "student")} onClick={() => setRole("student")}>
-            Student
-          </button>
-          <button type="button" style={getToggleStyle(role === "admin")} onClick={() => setRole("admin")}>
-            Admin
-          </button>
-        </div>
-
-        <form style={formStyle} onSubmit={handleSubmit}>
-          {isSignUp && (
-            <>
-              <div style={inputGroupStyle}>
-                <label style={labelStyle}>First Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Olwethu"
-                  style={inputStyle}
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div style={inputGroupStyle}>
-                <label style={labelStyle}>Last Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Mtwazi"
-                  style={inputStyle}
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                />
-              </div>
-            </>
-          )}
-
-          <div style={inputGroupStyle}>
-            <label style={labelStyle}>{role === "student" ? "Student Number" : "Staff ID Number"}</label>
-            <input
-              type="text"
-              placeholder={role === "student" ? "e.g. 219012345" : "e.g. ADM001"}
-              style={inputStyle}
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              required
+    <div style={pageStyle}>
+      <div style={formPanelStyle}>
+        <div style={cardStyle}>
+          <div style={logoWrapperStyle}>
+            <img
+              src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png"
+              alt="ItemHive Logo"
+              style={logoStyle}
             />
           </div>
 
-          <div style={inputGroupStyle}>
-            <label style={labelStyle}>Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              style={inputStyle}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+          <h2 style={titleStyle}>
+            Welcome to <span style={{ color: "#F97316" }}>ItemHive</span>
+          </h2>
+          <p style={subtitleStyle}>Sign in to access your store dashboard</p>
+
+          <div style={toggleContainerStyle}>
+            <button
+              type="button"
+              style={getToggleStyle(!isSignUp)}
+              onClick={() => {
+                setIsSignUp(false);
+                setError(null);
+                resetSignUpOnlyFields();
+              }}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              style={getToggleStyle(isSignUp)}
+              onClick={() => {
+                setIsSignUp(true);
+                setError(null);
+              }}
+            >
+              Sign Up
+            </button>
           </div>
 
-          {isSignUp && (
+          <div style={toggleContainerStyle}>
+            <button type="button" style={getToggleStyle(role === "student")} onClick={() => setRole("student")}>
+              Student
+            </button>
+            <button type="button" style={getToggleStyle(role === "admin")} onClick={() => setRole("admin")}>
+              Admin
+            </button>
+          </div>
+
+          <form style={formStyle} onSubmit={handleSubmit}>
+            {isSignUp && (
+              <>
+                <div style={inputGroupStyle}>
+                  <label style={labelStyle}>First Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. John"
+                    style={inputStyle}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div style={inputGroupStyle}>
+                  <label style={labelStyle}>Last Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Doe"
+                    style={inputStyle}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                  />
+                </div>
+              </>
+            )}
+
             <div style={inputGroupStyle}>
-              <label style={labelStyle}>Confirm Password</label>
+              <label style={labelStyle}>{role === "student" ? "Student Number" : "Staff ID Number"}</label>
               <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Re-enter your password"
+                type="text"
+                placeholder={role === "student" ? "e.g. 219012345" : "e.g. ADM001"}
                 style={inputStyle}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
               />
             </div>
-          )}
 
-          <label style={checkboxRowStyle}>
-            <input
-              type="checkbox"
-              checked={showPassword}
-              onChange={(e) => setShowPassword(e.target.checked)}
-              style={{ accentColor: "#F97316", cursor: "pointer", width: "16px", height: "16px" }}
-            />
-            Show Password
-          </label>
+            <div style={inputGroupStyle}>
+              <label style={labelStyle}>Password</label>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                style={inputStyle}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-          {error && <p style={{ color: "#DC2626", fontSize: "0.85rem", margin: 0 }}>{error}</p>}
+            {isSignUp && (
+              <div style={inputGroupStyle}>
+                <label style={labelStyle}>Confirm Password</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Re-enter your password"
+                  style={inputStyle}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+            )}
 
-          <button type="submit" style={submitBtnStyle} disabled={loading}>
-            {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
-          </button>
-        </form>
+            <label style={checkboxRowStyle}>
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={(e) => setShowPassword(e.target.checked)}
+                style={{ accentColor: "#F97316", cursor: "pointer", width: "16px", height: "16px" }}
+              />
+              Show Password
+            </label>
+
+            {error && <p style={{ color: "#DC2626", fontSize: "0.85rem", margin: 0 }}>{error}</p>}
+
+            <button type="submit" style={submitBtnStyle} disabled={loading}>
+              {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div style={imagePanelStyle}>
+        <div style={imagePhotoStyle} />
+        <div style={imageOverlayStyle} />
       </div>
     </div>
   );
 }
-
-const containerStyle = {
+  
+const pageStyle = {
   minHeight: "100vh",
+  display: "flex",
+  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+};
+
+const imagePanelStyle = {
+  flex: 1,
+  position: "relative",
+  overflow: "hidden",
+};
+
+const imagePhotoStyle = {
+  position: "absolute",
+  inset: 0,
+  backgroundImage: `url(${loginPhoto})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+};
+
+const imageOverlayStyle = {
+  position: "absolute",
+  inset: 0,
+  background: "linear-gradient(180deg, rgba(15,23,42,0) 55%, rgba(15,23,42,0.25) 100%)",
+};
+
+const imageCaptionStyle = {
+  position: "relative",
+  padding: "48px",
+  color: "#FFFFFF",
+};
+
+const imageHeadingStyle = {
+  fontSize: "2.25rem",
+  fontWeight: 800,
+  margin: "0 0 8px 0",
+};
+
+const imageSubStyle = {
+  fontSize: "1rem",
+  maxWidth: "380px",
+  color: "rgba(255,255,255,0.85)",
+  margin: 0,
+};
+
+const formPanelStyle = {
+  flex: 1,
+  minWidth: "380px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   backgroundColor: "#F8FAFC",
   padding: "20px",
   boxSizing: "border-box",
-  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
 };
 
 const cardStyle = {

@@ -239,3 +239,7 @@
   background-color: #fef2f2;
   border-color: #dc2626;
 }
+a.settings-action-btn {
+  text-decoration: none;
+  display: inline-block;
+}

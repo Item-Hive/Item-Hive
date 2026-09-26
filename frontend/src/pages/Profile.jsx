@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/Profile.css";
 import { useNavigate, Link } from "react-router-dom";
 const USER_KEY = "ict_branded_user";

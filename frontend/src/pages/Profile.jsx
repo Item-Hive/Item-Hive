@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Profile.css";
-
+import { useNavigate, Link } from "react-router-dom";
 const USER_KEY = "ict_branded_user";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -140,6 +140,16 @@ export default function Profile() {
               </div>
               <button className="settings-action-btn">Manage</button>
             </div>
+            
+            <div className="settings-item">
+        <div className="settings-info">
+    <span className="settings-label">Report a Product / Refund</span>
+    <span className="settings-val">Had an issue with an order?</span>
+  </div>
+  <Link to="/report-refund" className="settings-action-btn">
+    Report / Refund
+  </Link>
+</div>
           </div>
         </div>
 

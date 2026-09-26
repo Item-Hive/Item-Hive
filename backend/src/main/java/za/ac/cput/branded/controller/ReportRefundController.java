@@ -7,7 +7,7 @@ import za.ac.cput.branded.service.ReportRefundService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reportrefund")
+@RequestMapping("/api/report-refund")
 public class ReportRefundController {
     private ReportRefundService service;
 

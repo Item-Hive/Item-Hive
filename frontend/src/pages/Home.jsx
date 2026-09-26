@@ -1,22 +1,63 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Home.css';
-import logo from '../assets/item-hive-logo.jpeg'; // 
+import whiteTee from "../assets/back-white-tshirt.JPG";
+import orangeTee from "../assets/back-orange-tshirt.JPG";
+import navyHoodie from "../assets/navy-oversize-hoodie.jpeg";
+import orangeCrop from "../assets/orange-crop-top.jpeg";
 
 const HomePage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="home-container">
-      {}
+      {/* PROMO STRIP */}
+      <section className="promo-strip">
+        <div className="promo-block promo-large" onClick={() => navigate('/products')}>
+          <img src={navyHoodie} alt="Oversized Hoodies" className="promo-img" />
+          <div className="promo-overlay" />
+          <div className="promo-content">
+            <span className="promo-eyebrow">Student Favorite</span>
+            <h2>Oversized Hoodies</h2>
+            <button className="promo-link">Shop now →</button>
+          </div>
+        </div>
+
+        <div className="promo-stack">
+          <div className="promo-block promo-discount" onClick={() => navigate('/products')}>
+            <span className="promo-percent">-20%</span>
+            <span className="promo-caption">Student discount, applied automatically at checkout</span>
+          </div>
+
+          <div className="promo-block" onClick={() => navigate('/products')}>
+            <img src={orangeCrop} alt="Crop Tops" className="promo-img" />
+            <div className="promo-overlay" />
+            <div className="promo-content">
+              <span className="promo-eyebrow">New Drop</span>
+              <h3>Crop Tops</h3>
+            </div>
+          </div>
+
+          <div className="promo-block" onClick={() => navigate('/products')}>
+            <img src={orangeTee} alt="ICT Tees" className="promo-img" />
+            <div className="promo-overlay" />
+            <div className="promo-content">
+              <span className="promo-eyebrow">Best Seller</span>
+              <h3>ICT Tees</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HERO / BRAND STATEMENT */}
       <section className="hero-section">
         <div className="hero-content">
           <h1>
-            Welcome to <span className="brand-orange">Item Hive</span>
+            Your department. <span className="brand-orange">Your gear. Your confidence.</span>
           </h1>
           <p className="hero-tagline">CODE. CONNECT. CREATE</p>
           <p className="hero-description">
-            Empowering ICT students with affordable, high-quality branded apparel—building unity, department pride, and everyday confidence on campus.
+            Look good, feel good, and represent your department — without breaking the bank.
           </p>
           <div className="hero-buttons">
             <button className="btn-primary" onClick={() => navigate('/products')}>
@@ -29,65 +70,32 @@ const HomePage = () => {
         </div>
       </section>
 
-      {}
-      <section className="value-prop-section">
-        <div className="value-prop-card">
-          <h2>Our Purpose & Impact</h2>
-          <p>
-            Item Hive aids financially disadvantaged ICT students by offering high-quality T-shirts designed for daily wear throughout the school year. By reducing apparel costs, students can stretch their restricted funds for critical academic needs.
-          </p>
-          <p>
-            Beyond affordability, our apparel unites members of the ICT department under a common identity, fostering pride and strong peer connections across campus.
-          </p>
-        </div>
-      </section>
-
-      {}
+      {/* ABOUT / PILLARS */}
       <section id="about-us" className="about-section">
-        <h2 className="section-title">About Item Hive</h2>
-        
+        <h2 className="section-title">Why Item Hive</h2>
+
         <div className="pillars-grid">
-          {/* Mission */}
-          <div className="pillar-card">
-            <div className="pillar-header orange">
-              <h3>Mission</h3>
-            </div>
-            <p>
-              Provide a simple, dependable platform enabling our customers to purchase our ICT branded products easily and without effort.
-            </p>
+          <div className="pillar-card pillar-orange">
+            <span className="pillar-stat">-20%</span>
+            <h3>Built for Student Budgets</h3>
+            <p>Affordable, high-quality T-shirts designed for daily wear — so your funds stretch further.</p>
           </div>
 
-          {/* Vision */}
-          <div className="pillar-card">
-            <div className="pillar-header cyan">
-              <h3>Vision</h3>
-            </div>
-            <p>
-              Become a top brand in South Africa, built on reliable, simple, safe, and accessible software that addresses all of our customers' needs.
-            </p>
+          <div className="pillar-card pillar-cyan">
+            <span className="pillar-stat">100%</span>
+            <h3>One ICT Identity</h3>
+            <p>Apparel that unites the department under a common look — pride and connection, on and off campus.</p>
           </div>
 
-          {}
-          <div className="pillar-card">
-            <div className="pillar-header navy">
-              <h3>Values</h3>
-            </div>
-            <ul className="values-list">
-              <li>
-                <strong>Customer First:</strong> We value customer needs above profit.
-              </li>
-              <li>
-                <strong>Usability & Simplicity:</strong> We prioritize effortless usability and reliability over complex aesthetics.
-              </li>
-              <li>
-                <strong>Safety & Trust:</strong> We safeguard the interests and security of our student community.
-              </li>
-            </ul>
+          <div className="pillar-card pillar-navy">
+            <span className="pillar-stat">#1</span>
+            <h3>Customer First, Always</h3>
+            <p>Simple, safe, reliable software built around what our student community actually needs.</p>
           </div>
         </div>
       </section>
 
-      {}
+      {/* CTA SECTION */}
       <section className="cta-section">
         <h2>Ready to Represent Your Department?</h2>
         <p>Explore our latest ICT apparel collection designed for everyday student life.</p>

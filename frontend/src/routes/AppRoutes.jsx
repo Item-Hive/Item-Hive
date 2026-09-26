@@ -8,7 +8,7 @@ import Login from "../pages/Login";
 import Profile from "../pages/Profile";
 import Checkout from "../pages/Checkout";
 import BrandGuidelines from "../pages/BrandGuidelines";
-import ReportRefund from "..ReportRefund/pages/ReportRefund";
+import ReportRefund from "../pages/ReportRefund";
 
 
 function AppRoutes() {

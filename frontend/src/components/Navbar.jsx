@@ -1,11 +1,25 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
+const USER_KEY = "ict_branded_user";
+
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const getLoggedInUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem(USER_KEY) || "null");
+    } catch {
+      return null;
+    }
+  };
+
+  const user = getLoggedInUser();
+  const isLoggedIn = !!user?.id;
+
   const handleLogout = () => {
-    navigate("/login");
+    localStorage.removeItem(USER_KEY);
+    navigate("/");
   };
 
   const handleLogin = () => {
@@ -34,24 +48,27 @@ function Navbar() {
         zIndex: 1000,
       }}
     >
-      {/* App Logo */}
       <div style={{ width: "100%", textAlign: "center", marginBottom: "30px" }}>
         <img
           src="https://item-hive.github.io/src/Blue%20Playful%20Handwriting%20Creative%20Studio%20Logo%20(1).png"
           width="80px"
           height="80px"
           alt="logo"
-          style={{ 
-            borderRadius: "50%", 
+          style={{
+            borderRadius: "50%",
             boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
           }}
         />
         <h3 style={{ fontSize: "18px", color: "#F97316", marginTop: "10px", fontWeight: "700" }}>
           Item<span style={{ color: "#0F172A" }}>Hive</span>
         </h3>
+        {isLoggedIn && (
+          <p style={{ fontSize: "13px", color: "#64748B", marginTop: "6px" }}>
+            Hi, {user.firstName || "there"}
+          </p>
+        )}
       </div>
 
-      {/* Navigation Links */}
       <div
         style={{
           display: "flex",
@@ -60,67 +77,40 @@ function Navbar() {
           width: "100%",
         }}
       >
-        <Link
-          to="/"
-          style={getLinkStyle(isActive("/"))}
-        >
+        <Link to="/" style={getLinkStyle(isActive("/"))}>
           Home
         </Link>
-
-        <Link
-          to="/brand-guidelines"
-          style={getLinkStyle(isActive("/brand-guidelines"))}
-        >
+        <Link to="/brand-guidelines" style={getLinkStyle(isActive("/brand-guidelines"))}>
           Brand Guidelines
         </Link>
-
-        <Link
-          to="/products"
-          style={getLinkStyle(isActive("/products"))}
-        >
+        <Link to="/products" style={getLinkStyle(isActive("/products"))}>
           Products
         </Link>
-
-        <Link
-          to="/checkout"
-          style={getLinkStyle(isActive("/checkout"))}
-        >
+        <Link to="/checkout" style={getLinkStyle(isActive("/checkout"))}>
           Orders
         </Link>
-
-        <Link
-          to="/profile"
-          style={getLinkStyle(isActive("/profile"))}
-        >
-          Profile
-        </Link>
+        {isLoggedIn && (
+          <Link to="/profile" style={getLinkStyle(isActive("/profile"))}>
+            Profile
+          </Link>
+        )}
       </div>
 
-      {/* Auth Action Buttons */}
       <div style={{ marginTop: "auto", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
-        <button
-          id="login-btn"
-          type="button"
-          onClick={handleLogin}
-          style={loginBtnStyle}
-        >
-          Login
-        </button>
-
-        <button
-          id="logout-btn"
-          type="button"
-          onClick={handleLogout}
-          style={logoutBtnStyle}
-        >
-          Logout
-        </button>
+        {isLoggedIn ? (
+          <button id="logout-btn" type="button" onClick={handleLogout} style={logoutBtnStyle}>
+            Logout
+          </button>
+        ) : (
+          <button id="login-btn" type="button" onClick={handleLogin} style={loginBtnStyle}>
+            Login
+          </button>
+        )}
       </div>
     </nav>
   );
 }
 
-// Dynamic Link Style based on active page
 const getLinkStyle = (active) => ({
   color: active ? "#F97316" : "#475569",
   background: active ? "#FFF7ED" : "transparent",

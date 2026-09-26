@@ -83,6 +83,22 @@ public static Admin createAdmin(String idNumber, String email, String password, 
             .setLastName(lastName)
             .build();
 }
+    public static ReportRefund createReportRefund(String userId, String orderId,String itemName, String type , String reason, String description, boolean hasPhoto, String status, String createdAt, String updatedAt, String adminNotes, String photoUrl){
+        return new ReportRefund.Builder()
+                .setUserId(userId)
+                .setOrderId(orderId)
+                .setItemName(itemName)
+                .setType(type)
+                .setReason(reason)
+                .setDescription(description)
+                .setHasPhoto(true)
+                .setStatus(status)
+                .setCreatedAt(createdAt)
+                .setUpdatedAt(updatedAt)
+                .setAdminNotes(adminNotes)
+                .setPhotoUrl(photoUrl)
+                .build();
+    }
     public static String generateId(String idPrefix) {
         return idPrefix + UUID.randomUUID();
     }

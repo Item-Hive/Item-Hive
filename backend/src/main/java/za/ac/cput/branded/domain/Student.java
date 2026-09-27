@@ -23,7 +23,12 @@ public class Student extends User{
     }
     public static class Builder extends User.Builder{
         private String studentNumber;
-
+//email verification
+        @Override
+public Builder setEmailVerified(boolean emailVerified) {
+    super.setEmailVerified(emailVerified);
+    return this;
+}
         @Override
     public Builder setId(String id){
         super.setId(id);

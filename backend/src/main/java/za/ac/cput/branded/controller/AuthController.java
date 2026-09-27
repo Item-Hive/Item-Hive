@@ -31,6 +31,10 @@ public class AuthController {
         admin.setPassword(null);
         return ResponseEntity.ok(admin);
     }
+    @GetMapping("/verify")
+public ResponseEntity<String> verifyEmail(@RequestParam String token) {
+    return service.verifyEmail(token);
+}
 
     public static class LoginRequest {
         public String username;

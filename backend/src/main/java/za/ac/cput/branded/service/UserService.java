@@ -2,6 +2,7 @@ package za.acput.branded.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import za.acput.branded.domain.*;
 import za.acput.branded.factory.BrandedFactory;
 import za.acput.branded.repository.AdminRepository;
@@ -41,12 +42,15 @@ public class UserService implements IUserService {
 
     @Override
     public User create(UserDTO request) {
-        String hashedPassword = passwordEncoder.encode(request.password);
+        String hashedPassword =
+                passwordEncoder.encode(request.password);
 
         switch (request.role.toLowerCase()) {
 
             case "student":
-                if (studentRepository.findByStudentNumber(request.studentNumber) != null) {
+                if (studentRepository.findByStudentNumber(
+                        request.studentNumber
+                ) != null) {
                     throw new IllegalStateException(
                             "A student with this student number already exists"
                     );
@@ -63,7 +67,9 @@ public class UserService implements IUserService {
                 return saveUserAndSendVerificationEmail(student);
 
             case "admin":
-                if (adminRepository.findByIdNumber(request.idNumber) != null) {
+                if (adminRepository.findByIdNumber(
+                        request.idNumber
+                ) != null) {
                     throw new IllegalStateException(
                             "An admin with this ID number already exists"
                     );
@@ -89,11 +95,12 @@ public class UserService implements IUserService {
 
         String token = UUID.randomUUID().toString();
 
-        VerificationToken verificationToken = new VerificationToken(
-                token,
-                savedUser,
-                LocalDateTime.now().plusHours(24)
-        );
+        VerificationToken verificationToken =
+                new VerificationToken(
+                        token,
+                        savedUser,
+                        LocalDateTime.now().plusHours(24)
+                );
 
         verificationTokenRepository.save(verificationToken);
 
@@ -108,7 +115,9 @@ public class UserService implements IUserService {
     @Override
     public User update(UserDTO request) {
         User user = userRepository.findById(request.id)
-                .orElseThrow(() -> new IllegalStateException("User not found"));
+                .orElseThrow(() ->
+                        new IllegalStateException("User not found")
+                );
 
         if (request.email != null) {
             user.setEmail(request.email);
@@ -122,15 +131,20 @@ public class UserService implements IUserService {
             user.setLastName(request.lastName);
         }
 
-        if (request.password != null && !request.password.isBlank()) {
+        if (request.password != null
+                && !request.password.isBlank()) {
             user.setPassword(
                     passwordEncoder.encode(request.password)
             );
         }
 
-        if (user instanceof Student && request.studentNumber != null) {
-            ((Student) user).setStudentNumber(request.studentNumber);
-        } else if (user instanceof Admin && request.idNumber != null) {
+        if (user instanceof Student
+                && request.studentNumber != null) {
+            ((Student) user).setStudentNumber(
+                    request.studentNumber
+            );
+        } else if (user instanceof Admin
+                && request.idNumber != null) {
             ((Admin) user).setIdNumber(request.idNumber);
         }
 
@@ -202,6 +216,7 @@ public class UserService implements IUserService {
         return admin;
     }
 
+    @Transactional
     public boolean verifyEmail(String token) {
         VerificationToken verificationToken =
                 verificationTokenRepository
@@ -215,7 +230,10 @@ public class UserService implements IUserService {
         if (verificationToken.getExpiresAt()
                 .isBefore(LocalDateTime.now())) {
 
-            verificationTokenRepository.delete(verificationToken);
+            verificationTokenRepository.delete(
+                    verificationToken
+            );
+
             return false;
         }
 
@@ -223,7 +241,9 @@ public class UserService implements IUserService {
         user.setEmailVerified(true);
 
         userRepository.save(user);
-        verificationTokenRepository.delete(verificationToken);
+        verificationTokenRepository.delete(
+                verificationToken
+        );
 
         return true;
     }

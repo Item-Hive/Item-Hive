@@ -1,5 +1,6 @@
-package za.ac.cput.branded.domain;
+package za.acput.branded.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,15 +8,36 @@ import jakarta.persistence.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type")
 public abstract class User {
+
     @Id
     private String id;
+
     private String email;
     private String password;
     private String firstName;
     private String lastName;
 
-    protected User(){
+    @Column(nullable = false)
+    private boolean emailVerified = false;
 
+    protected User() {
+    }
+
+    public User(Builder builder) {
+        this.id = builder.id;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.emailVerified = builder.emailVerified;
+    }
+//Email verification
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 
     public String getId() {
@@ -34,6 +56,7 @@ public abstract class User {
         this.email = email;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -58,39 +81,43 @@ public abstract class User {
         this.lastName = lastName;
     }
 
-    public User (Builder builder){
-        this.id = builder.id;
-        this.email = builder.email;
-        this.password = builder.password;
-        this.firstName = builder.firstName;
-        this.lastName = builder.lastName;
-    }
-
     public static abstract class Builder {
+
         private String id;
         private String email;
         private String password;
         private String firstName;
         private String lastName;
 
-        public Builder setId(String id){
+        private boolean emailVerified = false;
+
+        public Builder setId(String id) {
             this.id = id;
             return this;
         }
-        public Builder setEmail(String email){
+
+        public Builder setEmail(String email) {
             this.email = email;
             return this;
         }
-        public Builder setPassword(String password){
-            this.password= password;
+
+        public Builder setPassword(String password) {
+            this.password = password;
             return this;
         }
-        public Builder setFirstName(String firstName){
+
+        public Builder setFirstName(String firstName) {
             this.firstName = firstName;
             return this;
         }
-        public Builder setLastName(String lastName){
+
+        public Builder setLastName(String lastName) {
             this.lastName = lastName;
+            return this;
+        }
+
+        public Builder setEmailVerified(boolean emailVerified) {
+            this.emailVerified = emailVerified;
             return this;
         }
 

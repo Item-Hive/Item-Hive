@@ -5,8 +5,6 @@ import za.ac.cput.branded.domain.*;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 public class BrandedFactory {
     public static Item createItem(String id, Category category , String name, String description, double price, int stockQuantity, String rating, String review){
         return new Item.Builder()
@@ -20,30 +18,30 @@ public class BrandedFactory {
                 .setReview(review)
                 .build();
     }
-public static Cart createCart(String id, String itemName, double price, int quantity, double subtotal, double serviceFee, double total){
-      return new Cart.Builder()
-              .setId(id)
-              .setItemName(itemName)
-              .setPrice(price)
-              .setQuantity(quantity)
-              .setSubtotal(subtotal)
-              .setServiceFee(serviceFee)
-              .setTotal(total)
-              .build();
+    public static Cart createCart(String id, String itemName, double price, int quantity, double subtotal, double serviceFee, double total){
+        return new Cart.Builder()
+                .setId(id)
+                .setItemName(itemName)
+                .setPrice(price)
+                .setQuantity(quantity)
+                .setSubtotal(subtotal)
+                .setServiceFee(serviceFee)
+                .setTotal(total)
+                .build();
 
-}
-public static Card createCard(String id, String bank, String cardHolder, int cardNumber, Date expiryDate, int cvv){
-    return new Card.Builder()
-            .setId(id)
-            .setBank(bank)
-            .setCardHolder(cardHolder)
-            .setCardNumber(cardNumber)
-            .setExpiryDate(expiryDate)
-            .setCcv(cvv)
-            .build();
+    }
+    public static Card createCard(String id, String bank, String cardHolder, int cardNumber, Date expiryDate, int cvv){
+        return new Card.Builder()
+                .setId(id)
+                .setBank(bank)
+                .setCardHolder(cardHolder)
+                .setCardNumber(cardNumber)
+                .setExpiryDate(expiryDate)
+                .setCcv(cvv)
+                .build();
 
-}
-public static Receipt createReceipt(String id, Company company, String itemName, int quantity, double price, double subtotal, double serviceFee, double total){
+    }
+    public static Receipt createReceipt(String id, Company company, String itemName, int quantity, double price, double subtotal, double serviceFee, double total){
         return new Receipt.Builder()
                 .setId(id)
                 .setCompany(company)
@@ -55,34 +53,36 @@ public static Receipt createReceipt(String id, Company company, String itemName,
                 .setTotal(total)
                 .build();
 
-}
-public static Invoice createInvoice(String id,CartDetails cartDetails){
+    }
+    public static Invoice createInvoice(String id,CartDetails cartDetails){
         return new Invoice.Builder()
                 .setId(id)
                 .setCartDetails(cartDetails)
                 .build();
-}
-public static Student createStudent(String studentNumber, String email, String password, String firstName, String lastName) {
-    return new Student.Builder()
-            .setId(generateId("ID-"))
-            .setEmail(email)
-            .setPassword(password)
-            .setStudentNumber(studentNumber)
-            .setFirstName(firstName)
-            .setLastName(lastName)
-            .build();
-}
+    }
+    public static Student createStudent(String studentNumber, String email, String password, String firstName, String lastName) {
+        return new Student.Builder()
+                .setId(generateId("ID-"))
+                .setEmail(email)
+                .setPassword(password)
+                .setStudentNumber(studentNumber)
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmailVerified(false)
+                .build();
+    }
 
-public static Admin createAdmin(String idNumber, String email, String password, String firstName, String lastName) {
-    return new Admin.Builder()
-            .setId(generateId("ID-"))
-            .setEmail(email)
-            .setPassword(password)
-            .setIdNumber(idNumber)
-            .setFirstName(firstName)
-            .setLastName(lastName)
-            .build();
-}
+    public static Admin createAdmin(String idNumber, String email, String password, String firstName, String lastName) {
+        return new Admin.Builder()
+                .setId(generateId("ID-"))
+                .setEmail(email)
+                .setPassword(password)
+                .setIdNumber(idNumber)
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmailVerified(false)
+                .build();
+    }
     public static ReportRefund createReportRefund(String userId, String orderId,String itemName, String type , String reason, String description, boolean hasPhoto, String status, String createdAt, String updatedAt, String adminNotes, String photoUrl){
         return new ReportRefund.Builder()
                 .setUserId(userId)
@@ -91,7 +91,7 @@ public static Admin createAdmin(String idNumber, String email, String password, 
                 .setType(type)
                 .setReason(reason)
                 .setDescription(description)
-                .setHasPhoto(true)
+                .setHasPhoto(hasPhoto)
                 .setStatus(status)
                 .setCreatedAt(createdAt)
                 .setUpdatedAt(updatedAt)

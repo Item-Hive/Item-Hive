@@ -25,7 +25,12 @@ public class Admin extends User{
     }
     public static class Builder extends User.Builder{
         private String idNumber;
-
+//email verification 
+        @Override
+public Builder setEmailVerified(boolean emailVerified) {
+    super.setEmailVerified(emailVerified);
+    return this;
+}
        @Override
     public Builder setId(String id){
         super.setId(id);

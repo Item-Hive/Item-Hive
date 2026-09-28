@@ -1,4 +1,4 @@
-package za.acput.branded.domain;
+package za.ac.cput.branded.domain;  
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -17,7 +17,7 @@ public abstract class User {
     private String firstName;
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean emailVerified = false;
 
     protected User() {

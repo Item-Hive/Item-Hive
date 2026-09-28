@@ -1,14 +1,14 @@
-package za.acput.branded.service;
+package za.ac.cput.branded.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import za.acput.branded.domain.*;
-import za.acput.branded.factory.BrandedFactory;
-import za.acput.branded.repository.AdminRepository;
-import za.acput.branded.repository.StudentRepository;
-import za.acput.branded.repository.UserRepository;
-import za.acput.branded.repository.VerificationTokenRepository;
+import za.ac.cput.branded.domain.*;
+import za.ac.cput.branded.factory.BrandedFactory;
+import za.ac.cput.branded.repository.AdminRepository;
+import za.ac.cput.branded.repository.StudentRepository;
+import za.ac.cput.branded.repository.UserRepository;
+import za.ac.cput.branded.repository.VerificationTokenRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

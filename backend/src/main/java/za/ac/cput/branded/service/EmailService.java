@@ -1,4 +1,4 @@
-package za.acput.branded.service;
+package za.ac.cput.branded.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

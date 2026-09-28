@@ -5,8 +5,6 @@ import za.ac.cput.branded.domain.*;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 public class BrandedFactory {
     public static Item createItem(String id, Category category , String name, String description, double price, int stockQuantity, String rating, String review){
         return new Item.Builder()
@@ -93,7 +91,7 @@ public class BrandedFactory {
                 .setType(type)
                 .setReason(reason)
                 .setDescription(description)
-                .setHasPhoto(true)
+                .setHasPhoto(hasPhoto)
                 .setStatus(status)
                 .setCreatedAt(createdAt)
                 .setUpdatedAt(updatedAt)

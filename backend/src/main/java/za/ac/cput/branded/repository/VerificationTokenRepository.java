@@ -1,7 +1,7 @@
-package za.acput.branded.repository;
+package za.ac.cput.branded.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import za.acput.branded.domain.VerificationToken;
+import za.ac.cput.branded.domain.VerificationToken;
 
 import java.util.Optional;
 

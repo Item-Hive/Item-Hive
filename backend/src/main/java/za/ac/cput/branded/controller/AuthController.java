@@ -8,7 +8,7 @@ import za.ac.cput.branded.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://item-hive.vercel.app"})
 public class AuthController {
     private final UserService service;
 
@@ -31,9 +31,16 @@ public class AuthController {
         admin.setPassword(null);
         return ResponseEntity.ok(admin);
     }
+
     @GetMapping("/verify")
-public ResponseEntity<String> verifyEmail(@RequestParam String token) {
-    return service.verifyEmail(token);
+    public ResponseEntity<String> verifyEmail(@RequestParam String token) {
+    boolean verified = service.verifyEmail(token);
+
+    if (verified) {
+        return ResponseEntity.ok("Email verified successfully! You can now log in.");
+    }
+
+    return ResponseEntity.badRequest().body("Invalid or expired verification link.");
 }
 
     public static class LoginRequest {

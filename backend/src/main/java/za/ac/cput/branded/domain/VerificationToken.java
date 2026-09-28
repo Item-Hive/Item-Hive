@@ -1,4 +1,4 @@
-package za.acput.branded.domain;
+package za.ac.cput.branded.domain;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

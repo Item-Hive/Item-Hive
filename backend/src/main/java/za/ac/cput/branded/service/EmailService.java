@@ -35,4 +35,23 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    @Async
+    public void sendOrderConfirmationEmail(String email, String orderNumber, String totalAmount, String deliveryDetails) {
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setTo(email);
+    message.setSubject("ItemHive - Order Confirmation " + orderNumber);
+    message.setText(
+        "Thank you for your order!\n\n" +
+        "Order Reference: " + orderNumber + "\n" +
+        "Total Paid: " + totalAmount + "\n" +
+        "Delivery / Pickup: " + deliveryDetails + "\n\n" +
+        "We're getting your item ready for dispatch!"
+    );
+    mailSender.send(message);
+}
+
+
+
+
 }

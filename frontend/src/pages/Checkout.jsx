@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Checkout.css";
-import YocoPayment from "../components/YocoPayment"; 
+import YocoPayment from "../components/YocoPayment";
+import EFTPayment from "../components/EFTPayment";
 
 const CART_KEY = "ict_branded_cart";
 const USER_KEY = "ict_branded_user";
 const DISCOUNT = 0.2;
 const API_URL = import.meta.env.VITE_API_URL;
 const BANKS = ["FNB", "Standard Bank", "ABSA", "Nedbank", "Capitec"];
-const PAYMENT_METHODS = ["YOCO", "SnapScan", "EFT"];
+const PAYMENT_METHODS = ["YOCO", "EFT"];
 const RESIDENCE_GROUPS = [
   {
     label: "Bellville Campus",
@@ -47,9 +48,10 @@ const RESIDENCE_GROUPS = [
 
 const money = (n) => "R" + (n % 1 === 0 ? n : n.toFixed(2));
 
-const getStudentNumber = () => {
+const getPaymentReference = () => {
   try {
-    return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.studentNumber;
+    const user = JSON.parse(localStorage.getItem(USER_KEY) || "null");
+    return user?.studentNumber || user?.idNumber;
   } catch {
     return undefined;
   }
@@ -245,10 +247,37 @@ function Checkout() {
     }
   };
 
-  const payLabel =
-    payment === "EFT"
-      ? `Pay ${money(total)} via EFT – ${selectedBank}`
-      : `Pay ${money(total)} with ${payment}`;
+  const renderPayButton = () => {
+    const blocked = placingOrder || !deliveryValid;
+
+    if (payment === "YOCO") {
+      return (
+        <YocoPayment
+          amount={total}
+          paymentReference={getPaymentReference()}
+          deliverySummary={getDeliverySummary()}
+          disabled={blocked}
+          buttonClassName="order-btn"
+          onSuccess={placeOrder}
+        />
+      );
+    }
+
+    if (payment === "EFT") {
+      return (
+        <EFTPayment
+          amount={total}
+          bank={selectedBank}
+          paymentReference={getPaymentReference()}
+          disabled={blocked}
+          loading={placingOrder}
+          onSuccess={placeOrder}
+        />
+      );
+    }
+
+    return null;
+  };
 
   return (
     <div className="checkout-container">
@@ -264,11 +293,16 @@ function Checkout() {
             <div className="confirm-emoji">🎉</div>
             <div className="confirm-title">Order Placed Successfully!</div>
             <div className="confirm-detail">
-              Total charged: <strong>{money(confirmation.total)}</strong> via <span>{confirmation.payment}</span>
+              Total: <strong>{money(confirmation.total)}</strong> via <span>{confirmation.payment}</span>
             </div>
             <div className="confirm-detail">
               Delivery: <strong>{confirmation.deliverySummary}</strong>
             </div>
+            {(confirmation.payment === "EFT" || confirmation.payment === "SnapScan") && (
+              <div className="confirm-detail">
+                We'll confirm your payment once it reflects in our account.
+              </div>
+            )}
             <button className="confirm-btn" onClick={() => navigate("/products")}>Continue Shopping</button>
           </div>
         ) : loadingCatalog ? (
@@ -375,12 +409,13 @@ function Checkout() {
                       placeholder="Store name or address"
                       style={fieldStyle}
                     />
-                    <a>
+                    {/* FIXED: the <a> tag was closed too early in the old version, which crashed the page */}
+                    <a
                       href="https://www.paxi.co.za/paxi-point-locator"
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ display: "inline-block", marginTop: "8px", fontSize: "0.85rem", color: "#FF6B00", fontWeight: 600 }}
-                    
+                    >
                       📍 Find your nearest PAXI point →
                     </a>
                   </div>
@@ -405,21 +440,15 @@ function Checkout() {
 
                 {payment === "EFT" && (
                   <div style={{ marginTop: "12px" }}>
-                    <label style={fieldLabelStyle}>Select Bank</label>
+                    <label style={fieldLabelStyle} htmlFor="bank">Select bank</label>
                     <select
+                      id="bank"
                       value={selectedBank}
                       onChange={(e) => setSelectedBank(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "10px",
-                        marginTop: "6px",
-                        borderRadius: "8px",
-                      }}
+                      style={fieldStyle}
                     >
                       {BANKS.map((bank) => (
-                        <option key={bank} value={bank}>
-                          {bank}
-                        </option>
+                        <option key={bank} value={bank}>{bank}</option>
                       ))}
                     </select>
                   </div>
@@ -455,27 +484,7 @@ function Checkout() {
               </p>
             )}
 
-            <div style={{ marginTop: "20px" }}>
-              {payment === "YOCO" ? (
-                <YocoPayment
-                  amount={total}
-                  studentNumber={getStudentNumber()}
-                  deliverySummary={getDeliverySummary()}
-                  disabled={placingOrder || !deliveryValid}
-                  buttonClassName="order-btn"
-                  onSuccess={placeOrder}
-                />
-              ) : (
-                <button
-                  className="order-btn"
-                  onClick={placeOrder}
-                  disabled={placingOrder || !deliveryValid}
-                  style={{ width: "100%" }}
-                >
-                  {placingOrder ? "Placing Order..." : payLabel}
-                </button>
-              )}
-            </div>
+            <div style={{ marginTop: "20px" }}>{renderPayButton()}</div>
           </>
         )}
       </div>

@@ -31,7 +31,7 @@ function formatCardNumber(value) {
 
 export default function YocoPayment({
   amount,
-  studentNumber,
+  paymentReference,
   deliverySummary,
   onSuccess,
   disabled = false,
@@ -55,7 +55,7 @@ export default function YocoPayment({
           <div style={modalStyle}>
             <PaymentForm
               amount={amount}
-              studentNumber={studentNumber}
+              paymentReference={paymentReference}
               deliverySummary={deliverySummary}
               onPaid={() => setTimeout(() => { if (onSuccess) onSuccess(); }, 2500)}
               onClose={() => setIsOpen(false)}
@@ -84,7 +84,7 @@ const modalStyle = {
   overflowY: "auto",
 };
 
-function PaymentForm({ amount, studentNumber, deliverySummary, onPaid, onClose }) {
+function PaymentForm({ amount,paymentReference , deliverySummary, onPaid, onClose }) {
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [cardNumber, setCardNumber] = useState("");

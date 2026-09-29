@@ -1,0 +1,14 @@
+
+.verify-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.verify-message {
+  font-size: 1.4rem;
+  color: #1a1a1a;
+}

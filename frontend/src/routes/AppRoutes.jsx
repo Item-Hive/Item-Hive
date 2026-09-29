@@ -9,6 +9,7 @@ import Profile from "../pages/Profile";
 import Checkout from "../pages/Checkout";
 import BrandGuidelines from "../pages/BrandGuidelines";
 import ReportRefund from "../pages/ReportRefund";
+import VerifyEmail from "../pages/VerifyEmail";
 
 
 function AppRoutes() {
@@ -25,6 +26,7 @@ function AppRoutes() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/brand-guidelines" element={<BrandGuidelines />} />
         <Route path="/report-refund" element={<ReportRefund />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         {/* Fallback Route */}
         <Route path="*" element={<Home />} /> {/* <-- Optional: redirect unknown paths to Home */}
       </Route>

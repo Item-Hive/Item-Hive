@@ -10,6 +10,7 @@ const DISCOUNT = 0.2;
 const API_URL = import.meta.env.VITE_API_URL;
 const BANKS = ["FNB", "Standard Bank", "ABSA", "Nedbank", "Capitec"];
 const PAYMENT_METHODS = ["YOCO", "EFT"];
+
 const RESIDENCE_GROUPS = [
   {
     label: "Bellville Campus",
@@ -57,11 +58,11 @@ const getPaymentReference = () => {
   }
 };
 
-const getLoggedInUserId = () => {
+const getLoggedInUser = () => {
   try {
-    return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.id;
+    return JSON.parse(localStorage.getItem(USER_KEY) || "null");
   } catch {
-    return undefined;
+    return null;
   }
 };
 
@@ -77,6 +78,8 @@ const fieldStyle = {
 
 function Checkout() {
   const navigate = useNavigate();
+  const user = getLoggedInUser();
+
   const [cart, setCart] = useState({});
   const [catalog, setCatalog] = useState({});
   const [loadingCatalog, setLoadingCatalog] = useState(true);
@@ -100,7 +103,7 @@ function Checkout() {
     }
   }, []);
 
-  // Fetch real items and build a lookup map by id
+  // Fetch items catalog
   useEffect(() => {
     const fetchCatalog = async () => {
       try {
@@ -127,7 +130,7 @@ function Checkout() {
     fetchCatalog();
   }, []);
 
-  // Keep cart in sync across tabs
+  // Sync cart across tabs
   useEffect(() => {
     const handleStorage = (e) => {
       if (e.key === CART_KEY && !confirmation) {
@@ -184,7 +187,6 @@ function Checkout() {
   const discountAmount = Math.round(subtotal * DISCOUNT);
   const total = subtotal - discountAmount;
 
-  // Delivery details must be complete before the customer can pay
   const deliveryValid =
     (delivery === "courier" && residence !== "" && roomNumber.trim() !== "") ||
     (delivery === "paxi" && paxiPoint.trim() !== "");
@@ -192,15 +194,15 @@ function Checkout() {
   const deliveryHint =
     delivery === "courier"
       ? "Select your residence and enter your room number to continue."
-      : "Enter your PAXI pickup point to continue.";
+      : "Enter your PAXI point name or code above to continue.";
 
   const getDeliverySummary = () => {
-    if (delivery === "courier") return `${residence}, room ${roomNumber.trim()}`;
-    return `PAXI – ${paxiPoint.trim()}`;
+    if (delivery === "courier") return `Standard Delivery – ${residence}, room ${roomNumber.trim()}`;
+    return `PAXI Pickup – ${paxiPoint.trim()}`;
   };
 
   const placeOrder = async () => {
-    if (placingOrder) return; // guard against double submits
+    if (placingOrder) return;
     if (!deliveryValid) {
       setOrderError(deliveryHint);
       return;
@@ -208,8 +210,10 @@ function Checkout() {
     setPlacingOrder(true);
     setOrderError(null);
 
+    // Generate neat order reference
+    const orderNum = `IH-${Math.floor(100000 + Math.random() * 900000)}`;
+
     try {
-      // One invoice per cart line item, matching the current backend schema
       const results = await Promise.all(
         items.map((item) =>
           fetch(`${API_URL}/api/invoice`, {
@@ -217,6 +221,7 @@ function Checkout() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               id: crypto.randomUUID(),
+              orderNumber: orderNum,
               receipt: {
                 itemName: item.name,
                 price: item.price,
@@ -224,7 +229,7 @@ function Checkout() {
                 subtotal: item.origLineTotal,
                 serviceFee: 0,
                 total: item.lineTotal,
-                userId: getLoggedInUserId(),
+                userId: user?.id,
                 deliveryType: delivery,
                 deliverySummary: getDeliverySummary(),
               },
@@ -237,7 +242,26 @@ function Checkout() {
         throw new Error("One or more invoices failed to save");
       }
 
-      setConfirmation({ total, payment, deliverySummary: getDeliverySummary() });
+      // Trigger confirmation email asynchronously
+      if (user?.email) {
+        fetch(`${API_URL}/api/auth/send-order-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: user.email,
+            orderNumber: orderNum,
+            totalAmount: money(total),
+            deliveryDetails: getDeliverySummary(),
+          }),
+        }).catch((err) => console.error("Email trigger error:", err));
+      }
+
+      setConfirmation({
+        orderNumber: orderNum,
+        total,
+        payment,
+        deliverySummary: getDeliverySummary(),
+      });
       saveCart({});
     } catch (err) {
       console.error("Failed to place order:", err);
@@ -289,21 +313,31 @@ function Checkout() {
 
       <div className="checkout-page">
         {confirmation ? (
-          <div className="confirm-card">
-            <div className="confirm-emoji">🎉</div>
-            <div className="confirm-title">Order Placed Successfully!</div>
-            <div className="confirm-detail">
-              Total: <strong>{money(confirmation.total)}</strong> via <span>{confirmation.payment}</span>
+          <div className="confirm-card" style={{ textAlign: "center", padding: "2rem", background: "#fff", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
+            <div className="confirm-emoji" style={{ fontSize: "3rem" }}>🎉</div>
+            <h2 style={{ fontSize: "1.6rem", fontWeight: 700, margin: "10px 0 4px" }}>Order Placed Successfully!</h2>
+            <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#FF6B00", marginBottom: "16px" }}>
+              Ref: #{confirmation.orderNumber}
             </div>
-            <div className="confirm-detail">
-              Delivery: <strong>{confirmation.deliverySummary}</strong>
+
+            <p style={{ color: "#475569", marginBottom: "12px" }}>
+              A confirmation receipt has been sent to <strong>{user?.email || "your email"}</strong>.
+            </p>
+
+            <div style={{ background: "#F8FAFC", padding: "12px", borderRadius: "8px", margin: "16px 0", textAlign: "left" }}>
+              <div className="confirm-detail">Total: <strong>{money(confirmation.total)}</strong> via <span>{confirmation.payment}</span></div>
+              <div className="confirm-detail" style={{ marginTop: "6px" }}>Fulfillment: <strong>{confirmation.deliverySummary}</strong></div>
             </div>
-            {(confirmation.payment === "EFT" || confirmation.payment === "SnapScan") && (
-              <div className="confirm-detail">
-                We'll confirm your payment once it reflects in our account.
-              </div>
+
+            {confirmation.payment === "EFT" && (
+              <p style={{ fontSize: "0.85rem", color: "#64748B", marginBottom: "16px" }}>
+                We'll confirm your payment once funds reflect in our account.
+              </p>
             )}
-            <button className="confirm-btn" onClick={() => navigate("/products")}>Continue Shopping</button>
+
+            <button className="confirm-btn" style={{ width: "100%", padding: "12px", background: "#FF6B00", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 600, cursor: "pointer" }} onClick={() => navigate("/products")}>
+              Continue Shopping
+            </button>
           </div>
         ) : loadingCatalog ? (
           <div className="empty-state">
@@ -349,18 +383,15 @@ function Checkout() {
             <div className="card">
               <div className="card-head">Delivery / Pickup Option</div>
               <div className="card-body">
-                <div
-                  className="del-grid"
-                  style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
-                >
+                <div className="del-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
                   <div className={`del-opt ${delivery === "courier" ? "active" : ""}`} onClick={() => setDelivery("courier")}>
-                    <div className="del-name">Standard Delivery</div>
+                    <div className="del-name">🚚 Standard Delivery</div>
                     <div className="del-desc">Direct to your residence</div>
                     <div className="del-price">FREE</div>
                   </div>
                   <div className={`del-opt ${delivery === "paxi" ? "active" : ""}`} onClick={() => setDelivery("paxi")}>
-                    <div className="del-name">PAXI</div>
-                    <div className="del-desc">Collect at a PAXI pickup point</div>
+                    <div className="del-name">📦 PAXI Pickup</div>
+                    <div className="del-desc">Collect at a PAXI point</div>
                     <div className="del-price">FREE</div>
                   </div>
                 </div>
@@ -368,12 +399,7 @@ function Checkout() {
                 {delivery === "courier" && (
                   <div style={{ marginTop: "14px" }}>
                     <label style={fieldLabelStyle} htmlFor="residence">Residence</label>
-                    <select
-                      id="residence"
-                      value={residence}
-                      onChange={(e) => setResidence(e.target.value)}
-                      style={fieldStyle}
-                    >
+                    <select id="residence" value={residence} onChange={(e) => setResidence(e.target.value)} style={fieldStyle}>
                       <option value="">Select your residence</option>
                       {RESIDENCE_GROUPS.map((group) => (
                         <optgroup key={group.label} label={group.label}>
@@ -384,39 +410,23 @@ function Checkout() {
                       ))}
                     </select>
 
-                    <label style={{ ...fieldLabelStyle, display: "block", marginTop: "12px" }} htmlFor="room">
-                      Room number
-                    </label>
-                    <input
-                      id="room"
-                      type="text"
-                      value={roomNumber}
-                      onChange={(e) => setRoomNumber(e.target.value)}
-                      placeholder="e.g. 214"
-                      style={fieldStyle}
-                    />
+                    <label style={{ ...fieldLabelStyle, display: "block", marginTop: "12px" }} htmlFor="room">Room number</label>
+                    <input id="room" type="text" value={roomNumber} onChange={(e) => setRoomNumber(e.target.value)} placeholder="e.g. Room 214" style={fieldStyle} />
                   </div>
                 )}
 
                 {delivery === "paxi" && (
                   <div style={{ marginTop: "14px" }}>
-                    <label style={fieldLabelStyle} htmlFor="paxi">PAXI pickup point</label>
-                    <input
-                      id="paxi"
-                      type="text"
-                      value={paxiPoint}
-                      onChange={(e) => setPaxiPoint(e.target.value)}
-                      placeholder="Store name or address"
-                      style={fieldStyle}
-                    />
-                              <a
-            href="https://paxi.co.za/paxi-for-you"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: "inline-block", marginTop: "8px", fontSize: "0.85rem", color: "#FF6B00", fontWeight: 600 }}
-          >
-            📍 Find your nearest PAXI point →
-          </a>
+                    <label style={fieldLabelStyle} htmlFor="paxi">PAXI Point Name or Code</label>
+                    <input id="paxi" type="text" value={paxiPoint} onChange={(e) => setPaxiPoint(e.target.value)} placeholder="e.g. P8601 - PEP Cape Town Strand Street" style={fieldStyle} />
+                    <div style={{ marginTop: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <a href="https://paxi.co.za/paxi-for-you" target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.85rem", color: "#FF6B00", fontWeight: 600 }}>
+                        📍 Open PAXI Map Finder →
+                      </a>
+                    </div>
+                    <p style={{ fontSize: "0.78rem", color: "#64748B", marginTop: "6px" }}>
+                      Find your nearest location on the PAXI map, then copy and paste the store name or P-Code above.
+                    </p>
                   </div>
                 )}
               </div>
@@ -427,25 +437,16 @@ function Checkout() {
               <div className="card-body">
                 <div className="pay-row">
                   {PAYMENT_METHODS.map((method) => (
-                    <button
-                      key={method}
-                      className={`pay-opt ${payment === method ? "active" : ""}`}
-                      onClick={() => setPayment(method)}
-                    >
-                      {method}
+                    <button key={method} className={`pay-opt ${payment === method ? "active" : ""}`} onClick={() => setPayment(method)}>
+                      {method === "YOCO" ? "💳 Card (YOCO)" : "🏦 Bank (EFT)"}
                     </button>
                   ))}
                 </div>
 
                 {payment === "EFT" && (
                   <div style={{ marginTop: "12px" }}>
-                    <label style={fieldLabelStyle} htmlFor="bank">Select bank</label>
-                    <select
-                      id="bank"
-                      value={selectedBank}
-                      onChange={(e) => setSelectedBank(e.target.value)}
-                      style={fieldStyle}
-                    >
+                    <label style={fieldLabelStyle} htmlFor="bank">Select Bank</label>
+                    <select id="bank" value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)} style={fieldStyle}>
                       {BANKS.map((bank) => (
                         <option key={bank} value={bank}>{bank}</option>
                       ))}
@@ -473,15 +474,8 @@ function Checkout() {
               </div>
             </div>
 
-            {orderError && (
-              <p style={{ color: "red", textAlign: "center" }}>{orderError}</p>
-            )}
-
-            {!deliveryValid && (
-              <p style={{ color: "#64748B", textAlign: "center", fontSize: "0.85rem" }}>
-                {deliveryHint}
-              </p>
-            )}
+            {orderError && <p style={{ color: "red", textAlign: "center" }}>{orderError}</p>}
+            {!deliveryValid && <p style={{ color: "#64748B", textAlign: "center", fontSize: "0.85rem" }}>{deliveryHint}</p>}
 
             <div style={{ marginTop: "20px" }}>{renderPayButton()}</div>
           </>

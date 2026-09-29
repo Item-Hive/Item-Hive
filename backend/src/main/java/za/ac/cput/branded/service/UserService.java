@@ -177,9 +177,9 @@ public class UserService implements IUserService {
             return null;
         }
 
-        if (!student.isEmailVerified()) {
-            return null;
-        }
+       // if (!student.isEmailVerified()) {
+       //     return null;
+       // }
 
         if (!passwordEncoder.matches(
                 rawPassword,
@@ -202,9 +202,9 @@ public class UserService implements IUserService {
             return null;
         }
 
-        if (!admin.isEmailVerified()) {
-            return null;
-        }
+       // if (!admin.isEmailVerified()) {
+       //     return null;
+       // }
 
         if (!passwordEncoder.matches(
                 rawPassword,

@@ -409,15 +409,14 @@ function Checkout() {
                       placeholder="Store name or address"
                       style={fieldStyle}
                     />
-                    {/* FIXED: the <a> tag was closed too early in the old version, which crashed the page */}
-                    <a
-                      href="https://www.paxi.co.za/paxi-point-locator"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ display: "inline-block", marginTop: "8px", fontSize: "0.85rem", color: "#FF6B00", fontWeight: 600 }}
-                    >
-                      📍 Find your nearest PAXI point →
-                    </a>
+                              <a
+            href="https://paxi.co.za/paxi-for-you"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "inline-block", marginTop: "8px", fontSize: "0.85rem", color: "#FF6B00", fontWeight: 600 }}
+          >
+            📍 Find your nearest PAXI point →
+          </a>
                   </div>
                 )}
               </div>

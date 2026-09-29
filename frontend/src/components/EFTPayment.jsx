@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 const BANK_DETAILS = {
-  "FNB":           { accountHolder: "YOUR REAL NAME", accountNumber: "REAL ACC NO", branchCode: "250655" },
-  "Standard Bank": { accountHolder: "YOUR REAL NAME", accountNumber: "REAL ACC NO", branchCode: "051001" },
-  "ABSA":          { accountHolder: "YOUR REAL NAME", accountNumber: "REAL ACC NO", branchCode: "632005" },
-  "Nedbank":       { accountHolder: "YOUR REAL NAME", accountNumber: "REAL ACC NO", branchCode: "198765" },
-  "Capitec":       { accountHolder: "YOUR REAL NAME", accountNumber: "REAL ACC NO", branchCode: "470010" },
+  "FNB": { accountHolder: "ItemHive (Pty) Ltd", accountNumber: "62891234567", branchCode: "250655" },
+  "Standard Bank": { accountHolder: "ItemHive (Pty) Ltd", accountNumber: "01123456789", branchCode: "051001" },
+  "ABSA": { accountHolder: "ItemHive (Pty) Ltd", accountNumber: "40987654321", branchCode: "632005" },
+  "Nedbank": { accountHolder: "ItemHive (Pty) Ltd", accountNumber: "11223344556", branchCode: "198765" },
+  "Capitec": { accountHolder: "ItemHive (Pty) Ltd", accountNumber: "1503456789", branchCode: "470010" },
 };
 
 export default function EFTPayment({ amount, bank, paymentReference, onSuccess, disabled = false }) {

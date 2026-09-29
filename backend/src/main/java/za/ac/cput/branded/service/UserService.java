@@ -42,18 +42,21 @@ public class UserService implements IUserService {
 
     @Override
     public User create(UserDTO request) {
-        String hashedPassword =
-                passwordEncoder.encode(request.password);
+        // 1. Prevent duplicate emails
+        if (userRepository.findByEmail(request.email) != null) {
+            throw new IllegalStateException("An account with this email already exists");
+        }
+
+        String hashedPassword = passwordEncoder.encode(request.password);
 
         switch (request.role.toLowerCase()) {
 
             case "student":
-                if (studentRepository.findByStudentNumber(
-                        request.studentNumber
-                ) != null) {
-                    throw new IllegalStateException(
-                            "A student with this student number already exists"
-                    );
+                if (request.studentNumber == null || request.studentNumber.isBlank()) {
+                    throw new IllegalArgumentException("Student number is required");
+                }
+                if (studentRepository.findByStudentNumber(request.studentNumber) != null) {
+                    throw new IllegalStateException("A student with this student number already exists");
                 }
 
                 User student = BrandedFactory.createStudent(
@@ -67,12 +70,11 @@ public class UserService implements IUserService {
                 return saveUserAndSendVerificationEmail(student);
 
             case "admin":
-                if (adminRepository.findByIdNumber(
-                        request.idNumber
-                ) != null) {
-                    throw new IllegalStateException(
-                            "An admin with this ID number already exists"
-                    );
+                if (request.idNumber == null || request.idNumber.isBlank()) {
+                    throw new IllegalArgumentException("ID number is required");
+                }
+                if (adminRepository.findByIdNumber(request.idNumber) != null) {
+                    throw new IllegalStateException("An admin with this ID number already exists");
                 }
 
                 User admin = BrandedFactory.createAdmin(
@@ -177,10 +179,6 @@ public class UserService implements IUserService {
             return null;
         }
 
-       // if (!student.isEmailVerified()) {
-       //     return null;
-       // }
-
         if (!passwordEncoder.matches(
                 rawPassword,
                 student.getPassword()
@@ -201,10 +199,6 @@ public class UserService implements IUserService {
         if (admin == null) {
             return null;
         }
-
-       // if (!admin.isEmailVerified()) {
-       //     return null;
-       // }
 
         if (!passwordEncoder.matches(
                 rawPassword,

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Profile.css";
 import { useNavigate, Link } from "react-router-dom";
+
 const USER_KEY = "ict_branded_user";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -91,25 +92,29 @@ export default function Profile() {
           <div className="card-body">
             {loadingOrders && <p style={{ color: "#64748B" }}>Loading orders...</p>}
             {!loadingOrders && orders.length === 0 && (
-              <p style={{ color: "#64748B" }}>No orders yet.</p>
+              <p style={{ color: "#64748B" }}>No orders placed yet.</p>
             )}
             {!loadingOrders &&
-              orders.map((order) => (
-                <div className="order-row" key={order.id}>
-                  <div className="order-details">
-                    <span className="order-id">{order.receipt?.itemName}</span>
-                    <span className="order-item-desc">
-                      {order.receipt?.deliveryType === "paxi"
-                        ? "PAXI"
-                        : "Standard Delivery"}
-                      {order.receipt?.deliverySummary
-                        ? ` – ${order.receipt.deliverySummary}`
-                        : ""}
+              orders.map((order) => {
+                const orderRef = order.orderNumber || (order.id ? `IH-${order.id.slice(0, 6)}` : "IH-ORDER");
+                return (
+                  <div className="order-row" key={order.id} style={{ padding: "12px 0", borderBottom: "1px solid #E2E8F0" }}>
+                    <div className="order-details">
+                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#FF6B00" }}>
+                        #{orderRef}
+                      </div>
+                      <span className="order-id" style={{ fontWeight: 600 }}>{order.receipt?.itemName}</span>
+                      <span className="order-item-desc" style={{ display: "block", fontSize: "0.85rem", color: "#64748B" }}>
+                        {order.receipt?.deliveryType === "paxi" ? "PAXI" : "Standard Delivery"}
+                        {order.receipt?.deliverySummary ? ` – ${order.receipt.deliverySummary}` : ""}
+                      </span>
+                    </div>
+                    <span className="order-price" style={{ fontWeight: 700, fontSize: "1rem" }}>
+                      {money(order.receipt?.total || 0)}
                     </span>
                   </div>
-                  <span className="order-price">{money(order.receipt?.total || 0)}</span>
-                </div>
-              ))}
+                );
+              })}
           </div>
         </div>
 
@@ -139,16 +144,16 @@ export default function Profile() {
               </div>
               <button className="settings-action-btn">Manage</button>
             </div>
-            
+
             <div className="settings-item">
-        <div className="settings-info">
-    <span className="settings-label">Report a Product / Refund</span>
-    <span className="settings-val">Had an issue with an order?</span>
-  </div>
-  <Link to="/report-refund" className="settings-action-btn">
-    Report / Refund
-  </Link>
-</div>
+              <div className="settings-info">
+                <span className="settings-label">Report a Product / Refund</span>
+                <span className="settings-val">Had an issue with an order?</span>
+              </div>
+              <Link to="/report-refund" className="settings-action-btn">
+                Report / Refund
+              </Link>
+            </div>
           </div>
         </div>
 

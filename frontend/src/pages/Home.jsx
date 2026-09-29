@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Home.css';
-import whiteTee from "../assets/back-white-tshirt.JPG";
 import orangeTee from "../assets/back-orange-tshirt.JPG";
 import navyHoodie from "../assets/navy-oversize-hoodie.jpeg";
 import orangeCrop from "../assets/orange-crop-top.jpeg";
@@ -11,53 +10,16 @@ const HomePage = () => {
 
   return (
     <div className="home-container">
-      {/* PROMO STRIP */}
-      <section className="promo-strip">
-        <div className="promo-block promo-large" onClick={() => navigate('/products')}>
-          <img src={navyHoodie} alt="Oversized Hoodies" className="promo-img" />
-          <div className="promo-overlay" />
-          <div className="promo-content">
-            <span className="promo-eyebrow">Student Favorite</span>
-            <h2>Oversized Hoodies</h2>
-            <button className="promo-link">Shop now →</button>
-          </div>
-        </div>
-
-        <div className="promo-stack">
-          <div className="promo-block promo-discount" onClick={() => navigate('/products')}>
-            <span className="promo-percent">-20%</span>
-            <span className="promo-caption">Student discount, applied automatically at checkout</span>
-          </div>
-
-          <div className="promo-block" onClick={() => navigate('/products')}>
-            <img src={orangeCrop} alt="Crop Tops" className="promo-img" />
-            <div className="promo-overlay" />
-            <div className="promo-content">
-              <span className="promo-eyebrow">New Drop</span>
-              <h3>Crop Tops</h3>
-            </div>
-          </div>
-
-          <div className="promo-block" onClick={() => navigate('/products')}>
-            <img src={orangeTee} alt="ICT Tees" className="promo-img" />
-            <div className="promo-overlay" />
-            <div className="promo-content">
-              <span className="promo-eyebrow">Best Seller</span>
-              <h3>ICT Tees</h3>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* HERO / BRAND STATEMENT */}
+      {/* 1. HERO BANNER */}
       <section className="hero-section">
         <div className="hero-content">
+          <span className="hero-tagline">CODE. CONNECT. CREATE</span>
           <h1>
-            Your department. <span className="brand-orange">Your gear. Your confidence.</span>
+            Your department. <br />
+            <span className="brand-orange">Your gear. Your confidence.</span>
           </h1>
-          <p className="hero-tagline">CODE. CONNECT. CREATE</p>
           <p className="hero-description">
-            Look good, feel good, and represent your department — without breaking the bank.
+            Look good, feel good, and represent your department — premium campus apparel built specifically for student life.
           </p>
           <div className="hero-buttons">
             <button className="btn-primary" onClick={() => navigate('/products')}>
@@ -70,10 +32,68 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ABOUT / PILLARS */}
+      {/* 2. STUDENT DISCOUNT BANNER */}
+      <section className="discount-banner" onClick={() => navigate('/products')}>
+        <div className="discount-badge">-20% OFF</div>
+        <div className="discount-text">
+          <h3>Student Discount Auto-Applied</h3>
+          <p>Every order qualifies for our 20% departmental discount at checkout.</p>
+        </div>
+        <button className="discount-btn">Shop Collection →</button>
+      </section>
+
+      {/* 3. FEATURED COLLECTIONS GRID */}
+      <section className="featured-section">
+        <div className="section-header">
+          <h2>Featured Gear</h2>
+          <p>Explore top picks designed for everyday campus wear</p>
+        </div>
+
+        <div className="products-grid">
+          {/* Main Large Card */}
+          <div className="product-card card-large" onClick={() => navigate('/products')}>
+            <div className="card-image-wrap">
+              <img src={navyHoodie} alt="Oversized Hoodies" />
+              <span className="badge badge-orange">Student Favorite</span>
+            </div>
+            <div className="card-info">
+              <h3>Oversized Hoodies</h3>
+              <p>Heavyweight comfort for late-night coding sessions.</p>
+              <span className="card-link">Explore Hoodies →</span>
+            </div>
+          </div>
+
+          {/* Secondary Card 1 */}
+          <div className="product-card" onClick={() => navigate('/products')}>
+            <div className="card-image-wrap">
+              <img src={orangeCrop} alt="Crop Tops" />
+              <span className="badge badge-cyan">New Drop</span>
+            </div>
+            <div className="card-info">
+              <h3>Crop Tops</h3>
+              <p>Breathable, modern silhouettes built for daily wear.</p>
+              <span className="card-link">View Styles →</span>
+            </div>
+          </div>
+
+          {/* Secondary Card 2 */}
+          <div className="product-card" onClick={() => navigate('/products')}>
+            <div className="card-image-wrap">
+              <img src={orangeTee} alt="ICT Tees" />
+              <span className="badge badge-navy">Best Seller</span>
+            </div>
+            <div className="card-info">
+              <h3>ICT Tees</h3>
+              <p>Classic departmental signature tees in vibrant orange.</p>
+              <span className="card-link">Shop Tees →</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. BRAND PILLARS / ABOUT */}
       <section id="about-us" className="about-section">
         <h2 className="section-title">Why Item Hive</h2>
-
         <div className="pillars-grid">
           <div className="pillar-card pillar-orange">
             <span className="pillar-stat">-20%</span>
@@ -95,7 +115,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* CTA SECTION */}
+      {/* 5. FINAL CTA */}
       <section className="cta-section">
         <h2>Ready to Represent Your Department?</h2>
         <p>Explore our latest ICT apparel collection designed for everyday student life.</p>

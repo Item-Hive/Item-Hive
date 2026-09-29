@@ -11,18 +11,20 @@ function Login() {
   const [identifier, setIdentifier] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
+  
   const resetSignUpOnlyFields = () => {
-    setFirstName("");
-    setLastName("");
-    setConfirmPassword("");
-  };
+  setFirstName("");
+  setLastName("");
+  setConfirmPassword("");
+  setEmail("");
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +35,10 @@ function Login() {
         setError("Please enter your first and last name.");
         return;
       }
+   if (!email.trim()) {
+    setError("Please enter your email.");
+    return;
+     }
       if (password !== confirmPassword) {
         setError("Passwords do not match.");
         return;
@@ -47,6 +53,7 @@ function Login() {
           role,
           firstName: firstName.trim(),
           lastName: lastName.trim(),
+          email: email.trim(),
           password,
           ...(role === "student" ? { studentNumber: identifier } : { idNumber: identifier }),
         };
@@ -153,6 +160,17 @@ function Login() {
                     required
                   />
                 </div>
+            <div style={inputGroupStyle}>
+                    <label style={labelStyle}>Email</label>
+                    <input
+                      type="email"
+                      placeholder="e.g. john@example.com"
+                      style={inputStyle}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
               </>
             )}
 

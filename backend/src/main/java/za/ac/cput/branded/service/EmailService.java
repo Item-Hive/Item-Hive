@@ -3,7 +3,9 @@ package za.ac.cput.branded.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmailService {
@@ -17,6 +19,8 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @Async
+    @Transactional
     public void sendVerificationEmail(String email, String token) {
         String link = frontendUrl + "/verify-email?token=" + token;
 

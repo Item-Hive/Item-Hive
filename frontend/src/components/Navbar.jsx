@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const USER_KEY = "ict_branded_user";
@@ -87,7 +88,13 @@ function Navbar() {
           Products
         </Link>
         <Link to="/checkout" style={getLinkStyle(isActive("/checkout"))}>
-          Orders
+          Cart
+        </Link>
+        <Link to="/order-status" style={getLinkStyle(isActive("/order-status"))}>
+          Order Status
+        </Link>
+        <Link to="/contact" style={getLinkStyle(isActive("/contact"))}>
+          Contact Us
         </Link>
         {isLoggedIn && (
           <Link to="/profile" style={getLinkStyle(isActive("/profile"))}>

@@ -1,8 +1,8 @@
 package za.ac.cput.branded.service;
 
 import za.ac.cput.branded.domain.Order;
-import za.ac.cput.branded.domain.CheckoutRequestDTO;
-import za.ac.cput.branded.domain.OrderConfirmationResponseDTO;
+import za.ac.cput.branded.DTO.CheckoutRequestDTO;
+import za.ac.cput.branded.DTO.OrderConfirmationResponseDTO;
 import za.ac.cput.branded.model.OrderItemSnapshot;
 import za.ac.cput.branded.repository.OrderRepository;
 import org.springframework.stereotype.Service;

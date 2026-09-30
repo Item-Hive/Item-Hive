@@ -1,4 +1,4 @@
-package za.ac.cput.branded.domain;
+package za.ac.cput.branded.DTO;
 
 public class OrderConfirmationResponseDTO {
     private String orderNumber;

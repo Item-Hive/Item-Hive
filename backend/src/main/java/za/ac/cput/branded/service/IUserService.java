@@ -1,7 +1,7 @@
 package za.ac.cput.branded.service;
 
 import za.ac.cput.branded.domain.User;
-import za.ac.cput.branded.domain.UserDTO;
+import za.ac.cput.branded.DTO.UserDTO;
 
 import java.util.List;
 

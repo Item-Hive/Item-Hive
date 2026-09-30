@@ -2,7 +2,7 @@ package za.ac.cput.branded.controller;
 
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.branded.domain.User;
-import za.ac.cput.branded.domain.UserDTO;
+import za.ac.cput.branded.DTO.UserDTO;
 import za.ac.cput.branded.service.UserService;
 
 import java.util.List;

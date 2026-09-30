@@ -1,15 +1,19 @@
 package za.ac.cput.branded.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import za.ac.cput.branded.domain.*;
+
+import za.ac.cput.branded.DTO.UserDTO;
 import za.ac.cput.branded.factory.BrandedFactory;
 import za.ac.cput.branded.repository.AdminRepository;
 import za.ac.cput.branded.repository.StudentRepository;
 import za.ac.cput.branded.repository.UserRepository;
 import za.ac.cput.branded.repository.VerificationTokenRepository;
-
+import za.ac.cput.branded.domain.User;
+import za.ac.cput.branded.domain.VerificationToken;
+import za.ac.cput.branded.domain.Student;
+import za.ac.cput.branded.domain.Admin;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

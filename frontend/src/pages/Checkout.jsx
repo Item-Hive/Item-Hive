@@ -328,7 +328,16 @@ function Checkout() {
       if (results.some((r) => !r.ok)) throw new Error("One or more invoices failed to save");
 
       // Confirmation email (don't block the order if it fails)
-      if (user?.email) {
+      const notifPrefs = (() => {
+        try {
+          return JSON.parse(localStorage.getItem(`ict_branded_notif_${user?.id || "guest"}`) || "null");
+        } catch {
+          return null;
+        }
+      })();
+      const sendEmail = Boolean(user?.email) && notifPrefs?.orderUpdates !== false;
+
+      if (sendEmail) {
         emailjs
           .send(
             EMAILJS_SERVICE_ID,
@@ -350,7 +359,7 @@ function Checkout() {
       }
 
       localStorage.setItem(
-        LAST_ORDER_KEY,
+        `${LAST_ORDER_KEY}_${user?.id || "guest"}`,
         JSON.stringify({
           orderNumber: orderNum,
           items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price, lineTotal: i.lineTotal })),
@@ -364,7 +373,7 @@ function Checkout() {
         })
       );
 
-      setConfirmation({ orderNumber: orderNum, total, payment, deliverySummary });
+      setConfirmation({ orderNumber: orderNum, total, payment, deliverySummary, emailed: sendEmail });
       saveCart({});
     } catch (err) {
       console.error("Failed to place order:", err);
@@ -417,9 +426,11 @@ function Checkout() {
             <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#FF6B00", marginBottom: "16px" }}>
               Ref: #{confirmation.orderNumber}
             </div>
-            <p style={{ color: "#475569" }}>
-              A confirmation receipt has been sent to <strong>{user?.email || "your email"}</strong>.
-            </p>
+            {confirmation.emailed && (
+              <p style={{ color: "#475569" }}>
+                A confirmation receipt has been sent to <strong>{user?.email}</strong>.
+              </p>
+            )}
             <div style={{ background: "#F8FAFC", padding: "12px", borderRadius: "8px", margin: "16px 0", textAlign: "left" }}>
               <div>Total: <strong>{money(confirmation.total)}</strong> via <span>{confirmation.payment}</span></div>
               <div style={{ marginTop: "6px" }}>Fulfillment: <strong>{confirmation.deliverySummary}</strong></div>

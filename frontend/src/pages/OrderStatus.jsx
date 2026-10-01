@@ -10,7 +10,9 @@ function OrderStatus() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(LAST_ORDER_KEY);
+      const user = JSON.parse(localStorage.getItem("ict_branded_user") || "null");
+      if (!user?.id) return;
+      const saved = localStorage.getItem(`${LAST_ORDER_KEY}_${user.id}`);
       if (saved) setOrder(JSON.parse(saved));
     } catch (e) {
       console.error("Failed to load last order", e);

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import loginPhoto from "../assets/students-typing.jpg";
 
@@ -15,30 +16,60 @@ function Login() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
+  const [notice, setNotice] = useState(null);
+  const [duplicate, setDuplicate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [slow, setSlow] = useState(false);
 
   const navigate = useNavigate();
-  
+
+  // Start waking the Render server as soon as the login page opens
+  useEffect(() => {
+    fetch(`${API_URL}/api/item`).catch(() => {});
+  }, []);
+
+  // Show a "waking up the server" hint if a request takes more than 5 seconds
+  useEffect(() => {
+    if (!loading) {
+      setSlow(false);
+      return;
+    }
+    const t = setTimeout(() => setSlow(true), 5000);
+    return () => clearTimeout(t);
+  }, [loading]);
+
   const resetSignUpOnlyFields = () => {
-  setFirstName("");
-  setLastName("");
-  setConfirmPassword("");
-  setEmail("");
-};
+    setFirstName("");
+    setLastName("");
+    setConfirmPassword("");
+    setEmail("");
+  };
+
+  const clearMessages = () => {
+    setError(null);
+    setNotice(null);
+    setDuplicate(false);
+  };
+
+  const switchToSignIn = () => {
+    setIsSignUp(false);
+    clearMessages();
+    resetSignUpOnlyFields();
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    clearMessages();
 
     if (isSignUp) {
       if (!firstName.trim() || !lastName.trim()) {
         setError("Please enter your first and last name.");
         return;
       }
-   if (!email.trim()) {
-    setError("Please enter your email.");
-    return;
-     }
+      if (!email.trim()) {
+        setError("Please enter your email.");
+        return;
+      }
       if (password !== confirmPassword) {
         setError("Passwords do not match.");
         return;
@@ -62,10 +93,20 @@ function Login() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
-        if (!res.ok) throw new Error("Registration failed. That number may already be in use.");
+
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          if (res.status === 409 || /already|exist|duplicate|in use/i.test(text)) {
+            setDuplicate(true);
+            setError("This user is already on the system.");
+            return;
+          }
+          throw new Error("Registration failed. That number may already be in use.");
+        }
+
         setIsSignUp(false);
-        setError(null);
         resetSignUpOnlyFields();
+        setNotice("Account created! Check your email for a verification link, then sign in.");
       } else {
         const endpoint = role === "student" ? "login/student" : "login/admin";
         const res = await fetch(`${API_URL}/api/auth/${endpoint}`, {
@@ -79,13 +120,31 @@ function Login() {
         navigate("/products");
       }
     } catch (err) {
-      setError(err.message);
+      setError(
+        err instanceof TypeError
+          ? "Can't reach the server. Please try again in a moment."
+          : err.message
+      );
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div style={pageStyle}>
+      {loading && (
+        <div style={loadingOverlayStyle} role="status" aria-live="polite">
+          <style>{`@keyframes ih-spin{to{transform:rotate(360deg)}}`}</style>
+          <div style={spinnerStyle} />
+          <p style={loadingTextStyle}>{isSignUp ? "Creating your account…" : "Signing you in…"}</p>
+          {slow && (
+            <p style={loadingSubStyle}>
+              Waking up the server. This can take up to a minute the first time.
+            </p>
+          )}
+        </div>
+      )}
+
       <div style={formPanelStyle}>
         <div style={cardStyle}>
           <div style={logoWrapperStyle}>
@@ -102,15 +161,7 @@ function Login() {
           <p style={subtitleStyle}>Sign in to access your store dashboard</p>
 
           <div style={toggleContainerStyle}>
-            <button
-              type="button"
-              style={getToggleStyle(!isSignUp)}
-              onClick={() => {
-                setIsSignUp(false);
-                setError(null);
-                resetSignUpOnlyFields();
-              }}
-            >
+            <button type="button" style={getToggleStyle(!isSignUp)} onClick={switchToSignIn}>
               Sign In
             </button>
             <button
@@ -118,7 +169,7 @@ function Login() {
               style={getToggleStyle(isSignUp)}
               onClick={() => {
                 setIsSignUp(true);
-                setError(null);
+                clearMessages();
               }}
             >
               Sign Up
@@ -160,17 +211,18 @@ function Login() {
                     required
                   />
                 </div>
-            <div style={inputGroupStyle}>
-                    <label style={labelStyle}>Email</label>
-                    <input
-                      type="email"
-                      placeholder="e.g. john@example.com"
-                      style={inputStyle}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
+
+                <div style={inputGroupStyle}>
+                  <label style={labelStyle}>Email</label>
+                  <input
+                    type="email"
+                    placeholder="e.g. john@example.com"
+                    style={inputStyle}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
               </>
             )}
 
@@ -222,9 +274,20 @@ function Login() {
               Show Password
             </label>
 
-            {error && <p style={{ color: "#DC2626", fontSize: "0.85rem", margin: 0 }}>{error}</p>}
+            {notice && <p style={noticeStyle}>{notice}</p>}
 
-            <button type="submit" style={submitBtnStyle} disabled={loading}>
+            {error && (
+              <div style={errorBoxStyle} role="alert">
+                <p style={{ margin: 0 }}>{error}</p>
+                {duplicate && (
+                  <button type="button" style={linkBtnStyle} onClick={switchToSignIn}>
+                    Already registered? Sign in instead
+                  </button>
+                )}
+              </div>
+            )}
+
+            <button type="submit" style={{ ...submitBtnStyle, opacity: loading ? 0.7 : 1 }} disabled={loading}>
               {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
             </button>
           </form>
@@ -238,7 +301,7 @@ function Login() {
     </div>
   );
 }
-  
+
 const pageStyle = {
   minHeight: "100vh",
   display: "flex",
@@ -263,25 +326,6 @@ const imageOverlayStyle = {
   position: "absolute",
   inset: 0,
   background: "linear-gradient(180deg, rgba(15,23,42,0) 55%, rgba(15,23,42,0.25) 100%)",
-};
-
-const imageCaptionStyle = {
-  position: "relative",
-  padding: "48px",
-  color: "#FFFFFF",
-};
-
-const imageHeadingStyle = {
-  fontSize: "2.25rem",
-  fontWeight: 800,
-  margin: "0 0 8px 0",
-};
-
-const imageSubStyle = {
-  fontSize: "1rem",
-  maxWidth: "380px",
-  color: "rgba(255,255,255,0.85)",
-  margin: 0,
 };
 
 const formPanelStyle = {
@@ -423,6 +467,73 @@ const submitBtnStyle = {
   cursor: "pointer",
   boxShadow: "0 2px 8px rgba(249, 115, 22, 0.25)",
   transition: "all 0.15s ease",
+};
+
+const noticeStyle = {
+  margin: 0,
+  padding: "10px 12px",
+  borderRadius: "8px",
+  background: "#F0FDF4",
+  border: "1px solid #BBF7D0",
+  color: "#166534",
+  fontSize: "0.85rem",
+};
+
+const errorBoxStyle = {
+  color: "#DC2626",
+  fontSize: "0.85rem",
+  display: "flex",
+  flexDirection: "column",
+  gap: "6px",
+};
+
+const linkBtnStyle = {
+  alignSelf: "flex-start",
+  background: "none",
+  border: "none",
+  padding: 0,
+  color: "#F97316",
+  fontWeight: 600,
+  fontSize: "0.85rem",
+  cursor: "pointer",
+  textDecoration: "underline",
+};
+
+const loadingOverlayStyle = {
+  position: "fixed",
+  inset: 0,
+  zIndex: 100,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "12px",
+  background: "rgba(248, 250, 252, 0.85)",
+  backdropFilter: "blur(3px)",
+};
+
+const spinnerStyle = {
+  width: "48px",
+  height: "48px",
+  border: "4px solid #FED7AA",
+  borderTopColor: "#F97316",
+  borderRadius: "50%",
+  animation: "ih-spin 0.8s linear infinite",
+};
+
+const loadingTextStyle = {
+  margin: 0,
+  color: "#0F172A",
+  fontWeight: 600,
+  fontSize: "1rem",
+};
+
+const loadingSubStyle = {
+  margin: 0,
+  color: "#64748B",
+  fontSize: "0.85rem",
+  maxWidth: "280px",
+  textAlign: "center",
 };
 
 export default Login;

@@ -7,6 +7,7 @@ import emailjs from "@emailjs/browser";
 
 const CART_KEY = "ict_branded_cart";
 const USER_KEY = "ict_branded_user";
+const LAST_ORDER_KEY = "ict_branded_last_order";
 const DISCOUNT = 0.2;
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:10000";
 const BANKS = ["FNB", "Standard Bank", "ABSA", "Nedbank", "Capitec"];
@@ -334,14 +335,34 @@ function Checkout() {
             EMAILJS_TEMPLATE_ID,
             {
               to_email: user.email,
-              order_number: orderNum,
-              total: money(total),
-              delivery: deliverySummary,
+              reply_to: "itemhive.noreply@gmail.com",
+              subject: `ItemHive Order Confirmation #${orderNum}`,
+              message:
+                `Thanks for your order!\n\n` +
+                `Order number: ${orderNum}\n` +
+                `Total: ${money(total)}\n` +
+                `Delivery: ${deliverySummary}\n\n` +
+                `Keep your order number for any queries. – ItemHive`,
             },
             { publicKey: EMAILJS_PUBLIC_KEY }
           )
           .catch((err) => console.error("EmailJS error:", err));
       }
+
+      localStorage.setItem(
+        LAST_ORDER_KEY,
+        JSON.stringify({
+          orderNumber: orderNum,
+          items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price, lineTotal: i.lineTotal })),
+          subtotal,
+          discountAmount,
+          paxiFee,
+          total,
+          payment,
+          deliverySummary,
+          placedAt: new Date().toISOString(),
+        })
+      );
 
       setConfirmation({ orderNumber: orderNum, total, payment, deliverySummary });
       saveCart({});

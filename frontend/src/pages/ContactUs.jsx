@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 import "../styles/ContactUs.css";
 
 const USER_KEY = "ict_branded_user";
-const API_URL = import.meta.env.VITE_API_URL;
+
+// EmailJS (same service + template as the order confirmation email)
+const EMAILJS_SERVICE_ID = "service_yreimln";
+const EMAILJS_TEMPLATE_ID = "template_x8vi8e9";
+const EMAILJS_PUBLIC_KEY = "l4ZIEzZgbcdQwSqW6";
+const SUPPORT_EMAIL = "itemhive.noreply@gmail.com";
 
 const SUBJECTS = [
   "General Question",
@@ -14,9 +20,9 @@ const SUBJECTS = [
   "Other",
 ];
 
-// TODO: replace these with your real contact details
+// TODO: replace the phone number with your real one
 const CONTACT_INFO = [
-  { label: "Email", value: "support@itemhive.co.za", href: "mailto:support@itemhive.co.za" },
+  { label: "Email", value: SUPPORT_EMAIL, href: `mailto:${SUPPORT_EMAIL}` },
   { label: "Phone", value: "+27 00 000 0000", href: "tel:+270000000000" },
   { label: "Campus", value: "CPUT Bellville Campus, Cape Town" },
 ];
@@ -56,23 +62,21 @@ export default function ContactUs() {
     setSubmitting(true);
     setSubmitError(null);
 
-    // NOTE: swap this endpoint/body once the backend endpoint exists.
-    const payload = {
-      id: crypto.randomUUID(),
-      userId: user?.id || null,
-      name: name.trim(),
-      email: email.trim(),
-      subject,
-      message: message.trim(),
-    };
-
     try {
-      const res = await fetch(`${API_URL}/api/contact`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          to_email: SUPPORT_EMAIL,
+          reply_to: email.trim(),
+          subject: `Contact form: ${subject}`,
+          message:
+            `From: ${name.trim()} (${email.trim()})\n` +
+            `Topic: ${subject}\n\n` +
+            message.trim(),
+        },
+        { publicKey: EMAILJS_PUBLIC_KEY }
+      );
       setSubmitted(true);
     } catch (err) {
       console.error("Failed to submit contact message:", err);
